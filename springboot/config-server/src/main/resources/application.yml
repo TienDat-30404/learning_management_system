@@ -1,0 +1,23 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${URL_CONFIG_SERVER}
+          default-label: main
+          search-paths: '{application}'
+    discovery:
+      enabled: true  
+      service-id: config-server
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Kết nối đến Eureka Server
+  instance:
+    prefer-ip-address: true

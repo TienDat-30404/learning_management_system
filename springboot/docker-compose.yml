@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+
+  discovery-eureka:
+    build: ./discovery-eureka
+    ports:
+      - "8761:8761"
+
+  config-server:
+    build: ./config-server
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - discovery-eureka
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"   # Cổng API Gateway
+    depends_on:
+      - discovery-eureka
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+  user-service:
+    build: ./user-service
+    env_file:
+      - ./user-service/.env  
+    ports:
+      - "8081:8081"
+    depends_on:
+      - discovery-eureka
+      - config-server
+      - api-gateway
+    # volumes:
+    #   - ./user-service:/app
+    # environment:
+    #   - SPRING_PROFILES_ACTIVE=dev
+    # command: ["java", "-jar", "/app/user-service.jar"]
+
+  
+
+
+  
