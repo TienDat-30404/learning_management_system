@@ -1,4 +1,4 @@
-package com.example.user_service.mapper.user;
+package com.example.user_service.mapper;
 
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,6 @@ public class UserMapper {
         dto.setId(user.getId());
         dto.setFullname(user.getFullname());
         dto.setEmail(user.getEmail());
-        dto.setPassword(user.getPassword());
         dto.setRole((user.getRole()));
         return dto;
     }

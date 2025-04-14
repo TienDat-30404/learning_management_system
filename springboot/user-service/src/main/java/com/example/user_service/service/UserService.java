@@ -2,17 +2,21 @@ package com.example.user_service.service;
 
 import com.example.user_service.model.User;
 import com.example.user_service.dto.user.UserResponseDTO;
+import com.example.user_service.mapper.UserMapper;
 import com.example.user_service.dto.ApiResponseDTO;
 import com.example.user_service.dto.user.UserRequestDTO;
-import com.example.user_service.mapper.user.UserMapper;
 import com.example.user_service.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -20,23 +24,20 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public ApiResponseDTO<UserResponseDTO> getAllUsers() {
-        int status = 200;
-        List<UserResponseDTO> users = userRepository.findAll()
-                .stream()
-                .map(userMapper::toDTO)
-                .collect(Collectors.toList());
-        return new ApiResponseDTO<>(status, users);
+     public ApiResponseDTO<List<UserResponseDTO>> getAllUsers(Pageable pageable) {
+        Page<User> userPage = userRepository.findAll(pageable);  
+        List<UserResponseDTO> users = userPage.stream()
+                                              .map(userMapper::toDTO)
+                                              .collect(Collectors.toList());
+
+        return new ApiResponseDTO<>(200, users, userPage.getTotalElements(), userPage.getTotalPages());
     }
 
-    public ApiResponseDTO<UserResponseDTO> createUser(UserRequestDTO requestDTO) {
-        User user = userMapper.toEntity(requestDTO);
+    public ApiResponseDTO<UserResponseDTO> createUser(UserRequestDTO userRequestDTO) {
+        User user = userMapper.toEntity(userRequestDTO);
         user = userRepository.save(user);
         UserResponseDTO userReponseDTO = userMapper.toDTO(user);
-        int status = 201;
-        List<UserResponseDTO> userList = List.of(userReponseDTO);
-        System.out.println(userList);
-        return new ApiResponseDTO<>(status, userList);
+        return new ApiResponseDTO<>(201, userReponseDTO);
     }
 
 }

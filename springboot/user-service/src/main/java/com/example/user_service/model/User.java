@@ -1,6 +1,8 @@
 package com.example.user_service.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -19,12 +21,16 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Full name is required")
     private String fullname;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "Email name is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     @Column(nullable = false)
+    @NotBlank(message = "Password is required")
     private String password;
 
     @ManyToOne(fetch = FetchType.EAGER)

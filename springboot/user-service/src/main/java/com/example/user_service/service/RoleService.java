@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.user_service.dto.ApiResponseDTO;
 import com.example.user_service.dto.role.RoleRequestDTO;
 import com.example.user_service.dto.role.RoleResponseDTO;
-import com.example.user_service.mapper.role.RoleMapper;
+import com.example.user_service.mapper.RoleMapper;
 import com.example.user_service.model.Role;
 import com.example.user_service.repository.RoleRepository;
 
@@ -21,23 +23,20 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
-    public ApiResponseDTO<RoleResponseDTO> getAllRoles() {
-        int status = 200;
-        List<RoleResponseDTO> roles = roleRepository.findAll()
-                .stream()
+    public ApiResponseDTO<List<RoleResponseDTO>> getAllRoles(Pageable pageable) {
+        Page<Role> rolePage = roleRepository.findAll(pageable);
+        List<RoleResponseDTO> roles = rolePage.stream()
                 .map(roleMapper::toDTO)
                 .collect(Collectors.toList());
-        return new ApiResponseDTO<>(status, roles);
+        return new ApiResponseDTO<>(200, roles, rolePage.getTotalElements(), rolePage.getTotalPages());
 
     }
 
     public ApiResponseDTO<RoleResponseDTO> createRole(RoleRequestDTO requestDTO) {
         Role role = roleMapper.toEntity(requestDTO);
-        role = roleRepository.save(role);
+        role = roleRepository.save(role);   
         RoleResponseDTO roleResponseDTO = roleMapper.toDTO(role);
-        List<RoleResponseDTO> roleList = List.of(roleResponseDTO);
-        int status = 201;
-        return new ApiResponseDTO<>(status, roleList);
+        return new ApiResponseDTO<>(201, roleResponseDTO);
     }
 
 }

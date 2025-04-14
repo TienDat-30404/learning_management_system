@@ -1,4 +1,4 @@
-package com.example.user_service.mapper.role;
+package com.example.user_service.mapper;
 
 import org.springframework.stereotype.Component;
 
