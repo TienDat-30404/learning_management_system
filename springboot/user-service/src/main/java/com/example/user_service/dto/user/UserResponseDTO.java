@@ -4,10 +4,7 @@ import com.example.user_service.model.Role;
 
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
-
+@Data
 public class UserResponseDTO {
     private Long id;
     private String fullname;

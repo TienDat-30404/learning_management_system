@@ -32,4 +32,9 @@ public class UserController {
     public ApiResponseDTO<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
         return userService.createUser(userRequestDTO);
     }
+
+    @GetMapping("/{id}")
+    public ApiResponseDTO<UserResponseDTO> getUserById(@PathVariable("id") Long id) {
+        return userService.getUserById(id);
+    }
 }

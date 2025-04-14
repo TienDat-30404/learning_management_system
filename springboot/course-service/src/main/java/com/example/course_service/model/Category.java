@@ -5,11 +5,9 @@ import lombok.*;
 
 @Entity
 @Table(name = "categories")
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor 
-@AllArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper=true)
+
 public class Category extends BaseEntity {
 
     @Id 

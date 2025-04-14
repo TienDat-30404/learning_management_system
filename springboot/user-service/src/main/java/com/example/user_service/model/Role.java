@@ -6,11 +6,9 @@ import lombok.*;
 @Entity
 @Table(name = "roles")
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
+@Data
+@EqualsAndHashCode(callSuper = true)
+
 
 public class Role extends BaseEntity {
     @Id

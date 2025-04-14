@@ -34,8 +34,8 @@ public class RoleController {
     }
 
     @PostMapping
-    public ApiResponseDTO<RoleResponseDTO> createRole(@Valid @RequestBody
-    RoleRequestDTO roleRequestDTO) {
-    return roleService.createRole(roleRequestDTO);
+    public ApiResponseDTO<RoleResponseDTO> createRole(@Valid @RequestBody RoleRequestDTO roleRequestDTO) {
+        return roleService.createRole(roleRequestDTO);
     }
+
 }

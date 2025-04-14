@@ -1,8 +1,7 @@
 package com.example.user_service.dto.role;
 import lombok.*;
-@Getter
-@Setter
-@ToString
+
+@Data
 public class RoleRequestDTO {
     private String name;
 }

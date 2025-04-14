@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -38,6 +39,16 @@ public class UserService {
         user = userRepository.save(user);
         UserResponseDTO userReponseDTO = userMapper.toDTO(user);
         return new ApiResponseDTO<>(201, userReponseDTO);
+    }
+
+    public ApiResponseDTO<UserResponseDTO> getUserById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            UserResponseDTO dto = userMapper.toDTO(user);
+            return new ApiResponseDTO<>(200, dto);
+        }
+        return new ApiResponseDTO<>(404, null);
     }
 
 }

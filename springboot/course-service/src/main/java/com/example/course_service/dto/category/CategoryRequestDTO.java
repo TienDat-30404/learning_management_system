@@ -1,9 +1,7 @@
 package com.example.course_service.dto.category;
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class CategoryRequestDTO {
     private String name;
 }

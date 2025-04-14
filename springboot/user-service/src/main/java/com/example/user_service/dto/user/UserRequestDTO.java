@@ -2,8 +2,7 @@ package com.example.user_service.dto.user;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @ToString(exclude = "password")
 public class UserRequestDTO {
     private String fullname;

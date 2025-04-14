@@ -8,10 +8,9 @@ import lombok.*;
 @Entity
 @Table(name = "users")
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = true)
+
 @ToString(exclude = "password")
 
 public class User extends BaseEntity {

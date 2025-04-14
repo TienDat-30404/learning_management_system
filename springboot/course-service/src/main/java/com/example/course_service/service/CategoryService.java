@@ -26,8 +26,8 @@ public class CategoryService {
         List<CategoryResponseDTO> categories = categoryPage.stream()
                                                 .map(categoryMapper::toDTO)
                                                 .collect(Collectors.toList());
-        return new ApiResponseDTO<>(200, categories, categoryPage.getTotalElements(), categoryPage.getTotalPages());
-    }
+                                                return new ApiResponseDTO<>(200, categories, categoryPage.getTotalElements(), categoryPage.getTotalPages());
+                                            }
 
     public ApiResponseDTO<CategoryResponseDTO> createCategory(CategoryRequestDTO categoryRequestDTO) {
         Category category = categoryMapper.toEntity(categoryRequestDTO);
