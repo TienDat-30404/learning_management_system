@@ -5,6 +5,7 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8888"
 
- 
-  # profiles:
-  #   active: dev
+  cache:
+    type: redis  
+    redis:
+      time-to-live: 600000

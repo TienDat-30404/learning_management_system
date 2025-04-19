@@ -1,4 +1,5 @@
 package com.example.user_service.dto.role;
+
 import lombok.*;
 
 @Data

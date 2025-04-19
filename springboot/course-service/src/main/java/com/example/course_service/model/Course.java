@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -35,13 +37,12 @@ public class Course extends BaseEntity {
     @NotBlank(message = "Image is required")
     private String image;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Category is required")
-    private Long categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
+    private Category category;
 
 
     @Column(nullable = false)
-    @NotBlank(message = "User is required")
     private Long userId;
 
     @Column(precision = 12, scale = 2)

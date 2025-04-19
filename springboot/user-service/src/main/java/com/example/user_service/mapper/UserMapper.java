@@ -8,15 +8,15 @@ import com.example.user_service.model.User;
 import com.example.user_service.model.Role;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.Data;
+
 import com.example.user_service.repository.RoleRepository;
 
+@Data
 @Component
 public class UserMapper {
     private final RoleRepository roleRepository;
 
-    public UserMapper(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
 
     public UserResponseDTO toDTO(User user) {
         UserResponseDTO dto = new UserResponseDTO();
@@ -34,7 +34,6 @@ public class UserMapper {
         user.setPassword(dto.getPassword());
         Role role = roleRepository.findById(dto.getRole())
                 .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + dto.getRole()));
-
         user.setRole(role);
         return user;
     }

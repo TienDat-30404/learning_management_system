@@ -1,9 +1,9 @@
 package com.example.user_service.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,11 +12,6 @@ import lombok.*;
 public class ApiResponseDTO<T> {
     private int status;
     private T data;
-    private Long totalElements;
-    private Integer totalPages;
+    private String message;
  
-    public ApiResponseDTO(int status, T data) {
-        this.status = status;
-        this.data = data;
-    }
 }

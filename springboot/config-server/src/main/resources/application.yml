@@ -15,6 +15,9 @@ spring:
       enabled: true  
       service-id: config-server
 
+  redis:
+    host: localhost     # Lấy cấu hình Redis từ Config Server
+    port: 6379
 eureka:
   client:
     service-url:

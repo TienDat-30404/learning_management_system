@@ -1,14 +1,17 @@
 package com.example.user_service.service;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.user_service.dto.ApiResponseDTO;
+import com.example.user_service.dto.CustomPageDTO;
 import com.example.user_service.dto.role.RoleRequestDTO;
 import com.example.user_service.dto.role.RoleResponseDTO;
 import com.example.user_service.mapper.RoleMapper;
@@ -23,20 +26,21 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
-    public ApiResponseDTO<List<RoleResponseDTO>> getAllRoles(Pageable pageable) {
+    @Cacheable(value = "roles", key = "'page' + #pageable.pageNumber + '&size=' + #pageable.pageSize")
+    public CustomPageDTO<RoleResponseDTO> getAllRoles(Pageable pageable) {
         Page<Role> rolePage = roleRepository.findAll(pageable);
-        List<RoleResponseDTO> roles = rolePage.stream()
-                .map(roleMapper::toDTO)
-                .collect(Collectors.toList());
-        return new ApiResponseDTO<>(200, roles, rolePage.getTotalElements(), rolePage.getTotalPages());
-
+        Page<RoleResponseDTO> roles = rolePage.map(roleMapper::toDTO);
+        return new CustomPageDTO<>(
+                roles.getContent(),
+                roles.getTotalElements(),
+                roles.getTotalPages());
     }
 
-    public ApiResponseDTO<RoleResponseDTO> createRole(RoleRequestDTO requestDTO) {
+
+    public RoleResponseDTO createRole(RoleRequestDTO requestDTO) {
         Role role = roleMapper.toEntity(requestDTO);
-        role = roleRepository.save(role);   
-        RoleResponseDTO roleResponseDTO = roleMapper.toDTO(role);
-        return new ApiResponseDTO<>(201, roleResponseDTO);
+        Role savedRole = roleRepository.save(role);
+        return roleMapper.toDTO(savedRole);
     }
 
 }
