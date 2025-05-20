@@ -1,12 +1,12 @@
 package com.example.user_service.controller;
 
 import com.example.user_service.dto.user.UserResponseDTO;
+import com.example.user_service.dto.user.UserUpdateDTO;
+import com.example.user_service.service.user.UserService;
 import com.example.user_service.dto.ApiResponseDTO;
 import com.example.user_service.dto.CustomPageDTO;
 import com.example.user_service.dto.user.UserRequestDTO;
-import com.example.user_service.service.UserService;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -68,6 +69,20 @@ public class UserController {
                 200, users, "Users retrieved successfully");
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponseDTO<UserResponseDTO>> updateUser(
+        @PathVariable Long id, 
+        @Valid @RequestBody UserUpdateDTO request) {
+        UserResponseDTO userResponseDTO = userService.updateUser(id, request);
+        ApiResponseDTO<UserResponseDTO> response = new ApiResponseDTO<>(
+            HttpStatus.OK.value(), userResponseDTO, "Cập nhật thông tin user thành công"
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
+
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;

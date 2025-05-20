@@ -1,9 +1,50 @@
 
+# spring:
+#   application:
+#     name: course-service
+
+#   config:
+#     import: "optional:configserver:http://localhost:8888"  
+
+  
+server:
+  port: 8082
+
 spring:
   application:
     name: course-service
 
-  config:
-    import: "optional:configserver:http://localhost:8888"  
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
+
+  jpa:
+    hibernate:
+      ddl-auto: update  
+    show-sql: true 
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
   
+cloudinary: 
+  cloud_name: ${CLOUDINARY_NAME}
+  api_key: ${CLOUDINARY_API_KEY}
+  api_secret: ${CLOUDINARY_API_SECRET}
+

@@ -1,12 +1,37 @@
 package com.example.user_service.dto.user;
 
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Data
 @ToString(exclude = "password")
 public class UserRequestDTO {
+    @NotEmpty(message = "Username không được để trống")
+    private String userName;
+
+    @NotEmpty(message = "Fullname không được để trống")
     private String fullname;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
+
+    @NotEmpty(message = "Giới tính không được để trống")
+    private String gender;
+
+    @NotEmpty(message = "Email không được để trống")
+    @Email(message = "Email không hợp lệ")
     private String email;
-    private String password; 
+
+    @NotEmpty(message = "Password không được để trống")
+    @Size(min = 6, message = "Password phải có ít nhất 6 ký tự")
+    private String password;
+
     private Long role;
 }

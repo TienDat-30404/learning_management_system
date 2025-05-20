@@ -16,6 +16,8 @@
         <module>api-gateway</module>
         <module>config-server</module>
         <module>course-service</module>
+        <module>review-service</module>
+
     </modules>
 
     <properties>

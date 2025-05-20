@@ -1,6 +1,8 @@
 package com.example.user_service.dto.user;
 
-import com.example.user_service.model.Role;
+import java.time.LocalDate;
+
+import com.example.user_service.dto.role.RoleResponseDTO;
 
 import lombok.*;
 
@@ -8,6 +10,8 @@ import lombok.*;
 public class UserResponseDTO {
     private Long id;
     private String fullname;
+    private String birthDate;
+    private String gender;
     private String email;
-    private Role role;
+    private RoleResponseDTO role;
 }
