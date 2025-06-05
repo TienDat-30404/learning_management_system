@@ -15,12 +15,15 @@ public interface CourseService {
    
     public CourseResponseDTO createCourse(CourseResquestDTO courseResquestDTO);
 
-    // @Cacheable(value = "courses", key = "'page=' + #pageable.pageNumber + '&size=' + #pageable.pageSize")
     public CustomPageDTO<CourseResponseDTO> getAllCourses(Pageable pageable);
 
     public Map<Long, UserResponseDTO> fetchUsers(List<Long> userIds);
 
 
     public CourseResponseDTO updateCourse(Long id, CourseUpdatetDTO request);
+
+    public CourseResponseDTO getCourseById(Long id);
+
+    public List<CourseResponseDTO> getCourseByIds(List<Long> ids);
 
 }

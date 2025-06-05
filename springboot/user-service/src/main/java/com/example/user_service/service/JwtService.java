@@ -20,21 +20,23 @@ public class JwtService {
     @Value("${jwt.refreshToken.expiration}")
     private long refreshTokenExpiration;
 
-    public String generateAccessToken(String username) {
+    public String generateAccessToken(Long userId, String roleName) {
         return JWT.create()
-                .withSubject(username)
+                .withSubject(userId.toString())
+                .withClaim("role", roleName)
                 .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .sign(Algorithm.HMAC256(secret));
     }
 
-    public String generateRefreshToken(String username) {
+    public String generateRefreshToken(Long userId, String roleName) {
         return JWT.create()
-                .withSubject(username)
+                .withSubject(userId.toString())
+                .withClaim("role", roleName)
                 .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .sign(Algorithm.HMAC256(secret));
     }
 
-    public String validateTokenAndGetUsername(String jwt) {
+    public String validateTokenAndGetUserId(String jwt) {
         try {
             return JWT.require(Algorithm.HMAC256(secret))
                     .build()

@@ -1,6 +1,4 @@
 
-
-
 # Đọc nội dung file .env và thiết lập các biến môi trường
 $envVars = Get-Content -Path ".env"
 

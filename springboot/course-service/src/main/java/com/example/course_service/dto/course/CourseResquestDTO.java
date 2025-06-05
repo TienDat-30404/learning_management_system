@@ -28,6 +28,7 @@ public class CourseResquestDTO {
 
     @NotNull(message = "User ID cannot be null")
     private Long userId;
+    
 
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")

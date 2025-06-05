@@ -1,39 +1,80 @@
 version: '3.8'
 services:
-
-  discovery-eureka:
-    build: ./discovery-eureka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
     ports:
-      - "8761:8761"
-
-  config-server:
-    build: ./config-server
-    ports:
-      - "8888:8888"
+      - "2181:2181"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-    depends_on:
-      - discovery-eureka
+      ZOOKEEPER_CLIENT_PORT: 2181
 
-  api-gateway:
-    build: ./api-gateway
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
     ports:
-      - "8080:8080"   # Cổng API Gateway
-    depends_on:
-      - discovery-eureka
+      - "9092:9092"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-
-  user-service:
-    build: ./user-service
-    env_file:
-      - ./user-service/.env  
-    ports:
-      - "8081:8081"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
-      - discovery-eureka
-      - config-server
-      - api-gateway
+      - zookeeper
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # discovery-eureka:
+  #   build: ./discovery-eureka
+  #   ports:
+  #     - "8761:8761"
+
+  # config-server:
+  #   build: ./config-server
+  #   ports:
+  #     - "8888:8888"
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=dev
+  #   depends_on:
+  #     - discovery-eureka
+
+  # api-gateway:
+  #   build: ./api-gateway
+  #   ports:
+  #     - "8080:8080"   # Cổng API Gateway
+  #   depends_on:
+  #     - discovery-eureka
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=dev
+
+  # user-service:
+  #   build: ./user-service
+  #   env_file:
+  #     - ./user-service/.env  
+  #   ports:
+  #     - "8081:8081"
+  #   depends_on:
+  #     - discovery-eureka
+  #     - config-server
+  #     - api-gateway
     # volumes:
     #   - ./user-service:/app
     # environment:

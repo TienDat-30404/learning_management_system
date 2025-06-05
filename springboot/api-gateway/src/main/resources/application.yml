@@ -39,6 +39,18 @@ spring:
           uri : lb://review-service
           predicates:
             - Path=/api/v1/reviews/**
+        - id: payment-service
+          uri : lb://payment-service
+          predicates:
+            - Path=/api/v1/paymentMethods/**, /api/v1/payments/**
+        - id: notification-service
+          uri : lb://notification-service
+          predicates:
+            - Path=/api/v1/notifications/**
+        - id: enrollment-service
+          uri : lb://enrollment-service
+          predicates:
+            - Path=/api/v1/enrollments/**
 
       globalcors:
         corsConfigurations:

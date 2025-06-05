@@ -11,6 +11,6 @@ import com.example.review_service.dto.review.ReviewUpdateDTO;
 public interface ReviewService {
     
     public CustomPageDTO<ReviewResponseDTO> getAllReviews(Pageable Pageable);
-    public ReviewResponseDTO addReview(ReviewRequestDTO request);
+    public ReviewResponseDTO addReview(ReviewRequestDTO request, Long userId);
     public ReviewResponseDTO updateReview(Long id, ReviewUpdateDTO request);
 }

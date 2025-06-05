@@ -64,8 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
                 listReviews, pageReview.getTotalElements(), pageReview.getTotalPages());
     }
 
-    public ReviewResponseDTO addReview(ReviewRequestDTO request) {
-        Long userId = request.getUserId();
+    public ReviewResponseDTO addReview(ReviewRequestDTO request, Long userId) {
         System.out.println("dataaa" + request);
         Boolean existUser = userClient.checkExistUser(userId);
         if (existUser == null || !existUser) {
@@ -73,6 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         Review review = reviewMapper.toEntity(request);
+        review.setUserId(userId);
         review = reviewRepository.save(review);
 
         ApiResponseDTO<UserResponseDTO> user = userClient.getUserById(userId);

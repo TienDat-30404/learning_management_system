@@ -1,6 +1,6 @@
 package com.example.review_service.dto.review;
 
-import com.example.review_service.model.TargetType;
+import com.example.review_service.enums.TargetType;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -19,8 +19,6 @@ public class ReviewRequestDTO {
     @Max(value = 5, message = "Rating không được lớn hơn 5")
     private Long rating;
 
-    @NotNull(message = "UserId không được để trống")
-    private Long userId;
 
     @NotNull(message = "TargetType không được để trống")
     private TargetType targetType;

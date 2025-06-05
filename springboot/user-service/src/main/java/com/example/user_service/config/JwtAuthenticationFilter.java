@@ -1,6 +1,9 @@
 package com.example.user_service.config;
 
-import com.example.user_service.service.CustomUserDetailsService;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import com.example.user_service.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,7 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -25,7 +31,9 @@ import java.util.Set;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
-    private final UserDetailsService userDetailsService;
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+    // private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,26 +44,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = authHeader.substring(7);
-        String username = jwtService.validateTokenAndGetUsername(jwt);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            try {
+                Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT jwt = verifier.verify(token);
+                String userId = jwt.getSubject();
+                String role = jwt.getClaim("role").asString();
+                if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    List<SimpleGrantedAuthority> authorities = role == null ? List.of()
+                            : List.of(new SimpleGrantedAuthority(role));
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId,
+                            null, authorities);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            } catch (Exception e) {
+                System.out.println("Invalid JWT token: " + e.getMessage());
+            }
         }
 
         filterChain.doFilter(request, response);
     }
 
     private static final Set<String> EXCLUUED_PATHS = Set.of(
-        "/api/v1/auth/login",
-        "/api/v1/auth/register"
-    );
-    
+            "/api/v1/auth/login",
+            "/api/v1/auth/register",
+            "/api/v1/users/by-ids");
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {

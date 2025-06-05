@@ -23,7 +23,6 @@ public class ReviewMapper {
         Review review = new Review();
         review.setComment(request.getComment());
         review.setRating(request.getRating());
-        review.setUserId(request.getUserId());
         review.setTargetType(request.getTargetType());
         review.setTargetId(request.getTargetId());
         return review;

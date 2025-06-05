@@ -10,6 +10,5 @@ public class AuthResponseDTO<T> {
     private String accessToken;
     private String refreshToken;
     private T userInfo;
-  
-    
+
 }

@@ -50,19 +50,18 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         User user = userMapper.toEntity(userRequestDTO);
         user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+        Role role = roleRepository.findById(userRequestDTO.getRole())
+                .orElseThrow(() -> new EntityNotFoundException("Role not found with id = " + userRequestDTO.getRole()));
+        user.setRole(role);
         User savedUser = userRepository.save(user);
         return userMapper.toDTO(savedUser);
     }
 
     // @Cacheable(value = "users", key = "'detaiUser=' + #id")
     public UserResponseDTO getUserById(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            return userMapper.toDTO(user);
-        } else {
-            throw new RuntimeException("User not found with id: " + id);
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id =" + id));
+        return userMapper.toDTO(user);
     }
 
     public boolean existsById(Long id) {
@@ -87,7 +86,6 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + request.getRole()));
             user.setRole(role);
         }
-        user.setRole(role);
         userMapper.updateUserFromDTO(request, user);
         User updatedUser = userRepository.save(user);
         return userMapper.toDTO(updatedUser);

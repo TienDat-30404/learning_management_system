@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.review_service.context.AuthenticatedUser;
 import com.example.review_service.dto.ApiResponseDTO;
 import com.example.review_service.dto.CustomPageDTO;
 import com.example.review_service.dto.review.ReviewRequestDTO;
@@ -28,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class ReviewController {
     private final ReviewService reviewService;
+    private final AuthenticatedUser authenticatedUser;
 
     @GetMapping
     public ResponseEntity<ApiResponseDTO<CustomPageDTO<ReviewResponseDTO>>> getAllReviews(
@@ -42,7 +44,8 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<ApiResponseDTO<ReviewResponseDTO>> addReview(@Valid @RequestBody ReviewRequestDTO request) {
-        ReviewResponseDTO review = reviewService.addReview(request);
+        Long userId = authenticatedUser.getUserId();
+        ReviewResponseDTO review = reviewService.addReview(request, userId);
         ApiResponseDTO<ReviewResponseDTO> response = new ApiResponseDTO<>(
                 201, review, "Add Review successful");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

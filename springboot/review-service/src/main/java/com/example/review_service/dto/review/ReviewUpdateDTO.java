@@ -1,6 +1,6 @@
 package com.example.review_service.dto.review;
 
-import com.example.review_service.model.TargetType;
+import com.example.review_service.enums.TargetType;
 
 import lombok.Data;
 

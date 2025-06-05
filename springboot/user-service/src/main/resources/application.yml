@@ -60,7 +60,7 @@ eureka:
     prefer-ip-address: true
 
 jwt:
-  secret: eF4$Kf!3v9XzQrL8mT#92hJxw@0N1GzD
+  secret: ${JWT_SECRET}
   accessToken:
     expiration: 3600000       # 1 giờ (ms)
   refreshToken:
