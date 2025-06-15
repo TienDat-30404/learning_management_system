@@ -32,12 +32,13 @@ public class LessonController {
         private final LessonService lessonService;
 
         @GetMapping
-        public ResponseEntity<ApiResponseDTO<CustomPageDTO<LessonResponseDTO>>> getAllLessons(
+        public ResponseEntity<ApiResponseDTO<CustomPageDTO<LessonResponseDTO>>> getAllLessonsOfCourse(
+                        @RequestParam(value = "courseId") Long courseId,
                         @RequestParam(value = "page", defaultValue = "0") int page,
                         @RequestParam(value = "size", defaultValue = "10") int size) {
 
                 Pageable pageable = PageRequest.of(page, size);
-                CustomPageDTO<LessonResponseDTO> lessons = lessonService.getAllLessons(pageable);
+                CustomPageDTO<LessonResponseDTO> lessons = lessonService.getAllLessonsOfCourse(pageable, courseId);
                 ApiResponseDTO<CustomPageDTO<LessonResponseDTO>> response = new ApiResponseDTO<>(
                                 200, lessons, "List all lessons");
                 return ResponseEntity.ok(response);
@@ -61,5 +62,35 @@ public class LessonController {
                                 200, lesson, "Update Lesson Successful");
                 return ResponseEntity.ok(response);
         }
+
+        @GetMapping("/{id}/exists")
+        public ResponseEntity<Boolean> checkLessonById(
+                        @PathVariable("id") Long id) {
+                Boolean response = lessonService.checkLessonById(id);
+                return ResponseEntity.ok(response);
+        }
+
+        
+        @GetMapping("/total-lesson")
+        public Long findTotalLessonInCourse(
+                        @RequestParam("courseId") Long courseId) {
+                return lessonService.totalLessonInCourse(courseId);
+        }
+
+        @GetMapping("/{id}")
+        public ResponseEntity<ApiResponseDTO<LessonResponseDTO>> getlessonById(
+                        @PathVariable("id") Long id) {
+                LessonResponseDTO lesson = lessonService.getLessonById(id);
+                ApiResponseDTO<LessonResponseDTO> response = new ApiResponseDTO<>(
+                                200, lesson, "Data lesson with id =" + id);
+                return ResponseEntity.ok(response);
+        }
+
+        @GetMapping("/course-id")
+        public Long findCourseIdBylessonId(
+                        @RequestParam("lessonId") Long lessonId) {
+                return lessonService.getCourseIdBasedOnLessonId(lessonId);
+        }
+
 
 }

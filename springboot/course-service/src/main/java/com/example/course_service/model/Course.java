@@ -41,7 +41,7 @@ public class Course extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
-    private Category category;
+    private Category category;  
 
 
     @Column(nullable = false)

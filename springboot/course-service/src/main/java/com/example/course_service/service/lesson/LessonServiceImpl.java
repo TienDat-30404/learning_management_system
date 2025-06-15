@@ -31,8 +31,8 @@ public class LessonServiceImpl implements LessonService {
     private final CloudinaryService cloudinaryService;
     private final CourseRepository courseRepository;
 
-    public CustomPageDTO<LessonResponseDTO> getAllLessons(Pageable pageable) {
-        Page<Lesson> lessonPage = lessonRepository.findAll(pageable);
+    public CustomPageDTO<LessonResponseDTO> getAllLessonsOfCourse(Pageable pageable, Long courseId) {
+        Page<Lesson> lessonPage = lessonRepository.findByCourseId(pageable, courseId);
         Page<LessonResponseDTO> lessons = lessonPage.map(lessonMapper::toDTO);
         return new CustomPageDTO<>(
                 lessons.getContent(),
@@ -62,19 +62,19 @@ public class LessonServiceImpl implements LessonService {
 
     public LessonResponseDTO updateLesson(Long id, LessonUpdateDTO request) {
         Lesson lesson = lessonRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Lesson not found with id=" + id)); 
-        if(request.getCourseId() != null) {
+                .orElseThrow(() -> new EntityNotFoundException("Lesson not found with id=" + id));
+        if (request.getCourseId() != null) {
             Course course = courseRepository.findById(request.getCourseId())
-                                    .orElseThrow(() -> new EntityNotFoundException("Course not found with id=" + request.getCourseId()));
+                    .orElseThrow(
+                            () -> new EntityNotFoundException("Course not found with id=" + request.getCourseId()));
             lesson.setCourse(course);
         }
 
-        if(request.getVideoUrl() != null && !request.getVideoUrl().isEmpty()) {
+        if (request.getVideoUrl() != null && !request.getVideoUrl().isEmpty()) {
             try {
                 String videoUrl = cloudinaryService.uploadVideo(request.getVideoUrl());
                 lesson.setVideoUrl(videoUrl);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Upload ảnh thất bại: " + e.getMessage());
             }
         }
@@ -83,6 +83,27 @@ public class LessonServiceImpl implements LessonService {
         lesson = lessonRepository.save(lesson);
         LessonResponseDTO response = lessonMapper.toDTO(lesson);
         return response;
+    }
+
+    public Boolean checkLessonById(Long id) {
+        return lessonRepository.existsById(id);
+    }
+
+    public LessonResponseDTO getLessonById(Long id) {
+        Lesson lesson = lessonRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Lesson not found with id = " + id));
+        return lessonMapper.toDTO(lesson);
+    }
+
+    public Long totalLessonInCourse(Long courseId) {
+        return lessonRepository.countByCourse_Id(courseId);
+    }
+
+    public Long getCourseIdBasedOnLessonId(Long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new EntityNotFoundException("Lesson not found with id = " + lessonId));
+        Long courseId = lesson.getCourse().getId();
+        return courseId;
     }
 
 }

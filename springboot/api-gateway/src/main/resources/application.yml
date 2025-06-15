@@ -50,7 +50,12 @@ spring:
         - id: enrollment-service
           uri : lb://enrollment-service
           predicates:
-            - Path=/api/v1/enrollments/**
+            - Path=/api/v1/enrollments/**, /api/v1/lesson-progress/**
+
+        - id: quiz-service
+          uri : lb://quiz-service
+          predicates:
+            - Path=/api/v1/quizs/**, /api/v1/quiz-attempts/**
 
       globalcors:
         corsConfigurations:

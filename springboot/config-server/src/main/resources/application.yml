@@ -19,7 +19,7 @@ spring:
     host: localhost     # Lấy cấu hình Redis từ Config Server
     port: 6379
 eureka:
-  client:
+  client: 
     service-url:
       defaultZone: http://localhost:8761/eureka/  # Kết nối đến Eureka Server
   instance:

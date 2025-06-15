@@ -9,9 +9,17 @@ import com.example.course_service.dto.lesson.LessonResponseDTO;
 import com.example.course_service.dto.lesson.LessonUpdateDTO;
 
 public interface LessonService {
-    public CustomPageDTO<LessonResponseDTO> getAllLessons(Pageable pageable);
+    public CustomPageDTO<LessonResponseDTO> getAllLessonsOfCourse(Pageable pageable, Long courseId);
 
     public LessonResponseDTO createLesson(LessonRequestDTO request);
 
     public LessonResponseDTO updateLesson(Long id, LessonUpdateDTO request);
+
+    public Boolean checkLessonById(Long id);
+
+    public LessonResponseDTO getLessonById(Long id);
+
+    public Long totalLessonInCourse(Long lessonId);
+
+    public Long getCourseIdBasedOnLessonId(Long lessonId);
 }

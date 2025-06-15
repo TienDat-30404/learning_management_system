@@ -14,7 +14,7 @@ import com.example.enrollment_service.context.AuthenticatedUser;
 import com.example.enrollment_service.dto.ApiResponseDTO;
 import com.example.enrollment_service.dto.CustomPageDTO;
 import com.example.enrollment_service.dto.enrollment.EnrollmentResponseDTO;
-import com.example.enrollment_service.service.EnrollmentService;
+import com.example.enrollment_service.service.enrollment.EnrollmentService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,4 +53,6 @@ public class EnrollmentController {
 
         return ResponseEntity.ok(response);
     }
+
+    
 }

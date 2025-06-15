@@ -14,4 +14,7 @@ public interface CourseClient {
 
     @GetMapping("/api/v1/courses/by-ids")
     ApiResponseDTO<List<CourseResponseDTO>> getCourseByIds(@RequestParam("ids") List<Long> courseId);
+
+    @GetMapping("/api/v1/lessons/total-lesson")
+    Long getTotalLessonInCourse(@RequestParam("courseId") Long courseId);
 }

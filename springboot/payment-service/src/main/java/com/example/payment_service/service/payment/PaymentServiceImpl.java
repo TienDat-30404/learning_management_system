@@ -47,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
                         "Payment method not found with id = " + request.getPaymentMethodId()));
         payment.setPaymentMethod(paymentMethod);
 
-        payment = paymentRepository.save(payment);
+        payment = paymentRepository.save(payment); 
         PaymentEvent paymentEvent = new PaymentEvent(
                 payment.getId(),
                 payment.getUserId(),
