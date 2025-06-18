@@ -20,22 +20,25 @@ import org.springframework.http.HttpStatus;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+
 public class AuthController {
     @Autowired
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDTO<AuthResponseDTO<UserResponseDTO>>> login(@Valid @RequestBody LoginRequestDTO request) {
+    public ResponseEntity<ApiResponseDTO<AuthResponseDTO<UserResponseDTO>>> login(
+            @Valid @RequestBody LoginRequestDTO request) {
         AuthResponseDTO<UserResponseDTO> authResponseDTO = authService.login(request);
-        ApiResponseDTO<AuthResponseDTO<UserResponseDTO>> response = new ApiResponseDTO<>(200, authResponseDTO, "Login successful");
+        ApiResponseDTO<AuthResponseDTO<UserResponseDTO>> response = new ApiResponseDTO<>(200, authResponseDTO,
+                "Login successful");
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseDTO<UserResponseDTO>> register (@Valid @RequestBody UserRequestDTO request) {
+    public ResponseEntity<ApiResponseDTO<UserResponseDTO>> register(@Valid @RequestBody UserRequestDTO request) {
         UserResponseDTO userResponseDTO = authService.register(request);
         ApiResponseDTO<UserResponseDTO> response = new ApiResponseDTO<>(201, userResponseDTO, "Register successful");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
+
 }

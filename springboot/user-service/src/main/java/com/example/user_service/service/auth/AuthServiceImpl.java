@@ -41,9 +41,9 @@ public class AuthServiceImpl implements AuthService {
         UserResponseDTO response = userMapper.toDTO(user);
 
         String accessToken = jwtService.generateAccessToken(user.getId(), user.getRole().getName());
-        String refreshToken = jwtService.generateRefreshToken(user.getId(), user.getRole().getName());
+        // String refreshToken = jwtService.generateRefreshToken(user.getId(), user.getRole().getName());
 
-        return new AuthResponseDTO<>(accessToken, refreshToken, response);
+        return new AuthResponseDTO<>(accessToken, response);
     }
     
 

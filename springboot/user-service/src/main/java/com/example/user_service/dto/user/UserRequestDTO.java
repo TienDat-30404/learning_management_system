@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -17,9 +18,10 @@ public class UserRequestDTO {
     private String userName;
 
     @NotEmpty(message = "Fullname không được để trống")
-    private String fullname;
+    private String fullName;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Ngày sinh không được để trống")
     private LocalDate birthDate;
 
     @NotEmpty(message = "Giới tính không được để trống")

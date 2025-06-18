@@ -42,8 +42,8 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
         Map<String, String> errors = new HashMap<>();
         errors.put("userName", "Username không tồn tại");
-        ErrorResponseDTO errorDTO = new ErrorResponseDTO(404, errors, request.getRequestURI());
-        return new ResponseEntity<>(errorDTO, HttpStatus.NOT_FOUND);
+        ErrorResponseDTO errorDTO = new ErrorResponseDTO(401, errors, request.getRequestURI());
+        return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

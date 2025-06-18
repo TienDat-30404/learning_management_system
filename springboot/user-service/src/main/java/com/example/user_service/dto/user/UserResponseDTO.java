@@ -9,7 +9,7 @@ import lombok.*;
 @Data
 public class UserResponseDTO {
     private Long id;
-    private String fullname;
+    private String fullName;
     private String birthDate;
     private String gender;
     private String email;

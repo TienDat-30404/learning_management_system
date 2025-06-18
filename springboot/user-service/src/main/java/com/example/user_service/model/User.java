@@ -34,8 +34,9 @@ public class User extends BaseEntity implements UserDetails {
     @NotBlank(message = "Username không được để trống")
     private String userName;
 
+    @Column(name = "full_name", nullable = false)
     @NotBlank(message = "Fullname không được để trống")
-    private String fullname;
+    private String fullName;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;

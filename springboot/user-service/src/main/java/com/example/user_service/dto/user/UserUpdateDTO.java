@@ -15,7 +15,7 @@ import lombok.ToString;
 public class UserUpdateDTO {
     private String userName;
 
-    private String fullname;
+    private String fullName;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;

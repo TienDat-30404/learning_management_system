@@ -20,7 +20,7 @@ public class UserMapper {
     public UserResponseDTO toDTO(User user) {
         UserResponseDTO dto = new UserResponseDTO();
         dto.setId(user.getId());
-        dto.setFullname(user.getFullname());
+        dto.setFullName(user.getFullName());
         dto.setEmail(user.getEmail());
         dto.setBirthDate(user.getBirthDate().toString());
         dto.setGender(user.getGender());
@@ -34,7 +34,7 @@ public class UserMapper {
     public User toEntity(UserRequestDTO dto) {
         User user = new User();
         user.setUserName(dto.getUserName());
-        user.setFullname(dto.getFullname());
+        user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
         user.setBirthDate(dto.getBirthDate());
         user.setGender(dto.getGender());
@@ -43,7 +43,7 @@ public class UserMapper {
     }
 
     public void updateUserFromDTO(UserUpdateDTO dto, User user) {
-        if (dto.getFullname() != null) user.setFullname(dto.getFullname());
+        if (dto.getFullName() != null) user.setFullName(dto.getFullName());
         if (dto.getGender() != null) user.setGender(dto.getGender());
         if (dto.getBirthDate() != null) user.setBirthDate(dto.getBirthDate());
         if (dto.getEmail() != null) user.setEmail(dto.getEmail());
