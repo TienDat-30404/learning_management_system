@@ -69,3 +69,6 @@ jwt:
 logging:
   level:
     org.springframework.security: DEBUG
+internal:
+  api:
+    key: ${API_KEY_INTERNAL}

@@ -2,6 +2,7 @@ package com.example.enrollment_service.service.lesson_progress;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.enrollment_service.client.CourseClient;
@@ -28,8 +29,12 @@ public class LessonProgressServiceImpl implements LessonProgressService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseClient courseClient;
     private final UserClient userClient;
+    
+    @Value("${internal.api.key}")
+    private String apiInternal;
 
     public void addLessonProgressForUser(LessonProgressRequestDTO request) {
+        System.out.println("apiInternallllllllllll" + apiInternal);
         Boolean existUser = userClient.checkExistUser(request.getUserId());
         if (!existUser) {
             throw new EntityNotFoundException("User not found with id = " + request.getUserId());
@@ -65,8 +70,8 @@ public class LessonProgressServiceImpl implements LessonProgressService {
             enrollmentRepository.save(enrollment);
         }
         LessonProgressResponseDTO response = lessonProgressMapper.toDTO(lessonProgress);
-        ApiResponseDTO<UserResponseDTO> user = userClient.getUserById(userId);
-        response.setUser(user.getData());
+        // ApiResponseDTO<UserResponseDTO> user = userClient.getUserById(userId);
+        // response.setUser(user.getData());
         return response;
     }
 

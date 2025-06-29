@@ -67,13 +67,9 @@ public class CourseServiceImpl implements CourseService {
         course.setUserId(userId);
         course.setImage(imageUrl);
         course.setCategory(category);
-        
-
         course = courseRepository.save(course);
 
-        ApiResponseDTO<UserResponseDTO> user = userClient.getUserById(userId);
         CourseResponseDTO response = courseMapper.toDTO(course);
-        response.setUser(user.getData());
         return response;
     }
 
@@ -83,23 +79,10 @@ public class CourseServiceImpl implements CourseService {
         try {
 
             Page<Course> coursePage = courseRepository.findAll(pageable);
-            List<Course> courses = coursePage.getContent();
-            List<Long> userIds = courses.stream()
-                    .map(Course::getUserId)
-                    .collect(Collectors.toList());
-
-            Map<Long, UserResponseDTO> userMap = fetchUsers(userIds);
-            List<CourseResponseDTO> listCourses = courses.stream().map(course -> {
-                CourseResponseDTO dto = courseMapper.toDTO(course);
-                UserResponseDTO user = userMap.get(course.getUserId());
-                if (user != null) {
-                    dto.setUser(user);
-                }
-                return dto;
-            }).collect(Collectors.toList());
-
+            Page<CourseResponseDTO> courses = coursePage.map(courseMapper::toDTO);
+ 
             return new CustomPageDTO<>(
-                    listCourses,
+                    courses.getContent(),
                     coursePage.getTotalElements(),
                     coursePage.getTotalPages());
         } catch (Exception e) {
@@ -108,18 +91,7 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-    public Map<Long, UserResponseDTO> fetchUsers(List<Long> userIds) {
-        try {
-            ApiResponseDTO<List<UserResponseDTO>> response = userClient.getUsersByIds(userIds);
-            List<UserResponseDTO> users = response.getData();
-            return users.stream()
-                    .filter(user -> user != null && user.getId() != null)
-                    .collect(Collectors.toMap(UserResponseDTO::getId, user -> user));
-        } catch (Exception e) {
-            log.error("Failed to fetch users: {}", e.getMessage());
-            return Map.of();
-        }
-    }
+   
 
     public CourseResponseDTO updateCourse(Long id, CourseUpdatetDTO request) {
         Course course = courseRepository.findById(id)
@@ -142,9 +114,9 @@ public class CourseServiceImpl implements CourseService {
 
         courseMapper.updateCourseFromDTO(request, course);
         Course updatedCourse = courseRepository.save(course);
-        ApiResponseDTO<UserResponseDTO> userResponse = userClient.getUserById(updatedCourse.getUserId());
+        // ApiResponseDTO<UserResponseDTO> userResponse = userClient.getUserById(updatedCourse.getUserId());
         CourseResponseDTO responseDTO = courseMapper.toDTO(updatedCourse);
-        responseDTO.setUser(userResponse.getData());
+        // responseDTO.setUser(userResponse.getData());
 
         return responseDTO;
     }
@@ -160,6 +132,10 @@ public class CourseServiceImpl implements CourseService {
         List<CourseResponseDTO> response = courses.stream().map(courseMapper::toDTO)
                 .collect(Collectors.toList());
         return response;
+    }
+
+       public boolean existsById(Long id) {
+        return courseRepository.existsById(id);
     }
 
 }

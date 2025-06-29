@@ -16,7 +16,7 @@ public class CourseResponseDTO {
     private String title;
     private String description;
     private String image;
+    private Long userId;
     private CategoryResponseDTO category;
-    private UserResponseDTO user;
     private BigDecimal price;
 }

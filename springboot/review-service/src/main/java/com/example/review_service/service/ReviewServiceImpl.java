@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,9 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserClient userClient;
     private final ReviewMapper reviewMapper;
+    
+    @Value("${internal.api.key}")
+    private String apiInternal;
 
     public Map<Long, UserResponseDTO> fetchUsers(List<Long> userIds) {
         try {
@@ -66,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     public ReviewResponseDTO addReview(ReviewRequestDTO request, Long userId) {
         System.out.println("dataaa" + request);
-        Boolean existUser = userClient.checkExistUser(userId);
+        Boolean existUser = userClient.checkExistUser(userId, apiInternal);
         if (existUser == null || !existUser) {
             throw new EntityNotFoundException("User with id " + userId + " does not exist");
         }

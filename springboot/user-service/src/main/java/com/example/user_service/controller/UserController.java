@@ -2,6 +2,8 @@ package com.example.user_service.controller;
 
 import com.example.user_service.dto.user.UserResponseDTO;
 import com.example.user_service.dto.user.UserUpdateDTO;
+import com.example.user_service.repository.UserRepository;
+import com.example.user_service.service.ApiKeyValidator;
 import com.example.user_service.service.user.UserService;
 import com.example.user_service.dto.ApiResponseDTO;
 import com.example.user_service.dto.CustomPageDTO;
@@ -20,12 +22,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final ApiKeyValidator apiKeyValidator;
+    private final UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<ApiResponseDTO<CustomPageDTO<UserResponseDTO>>> getAllUsers(
@@ -55,11 +60,11 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{userId}/exists")
-    public ResponseEntity<Boolean> checkUserExists(@PathVariable("userId") Long userId) {
-        boolean exists = userService.existsById(userId);
-        return ResponseEntity.ok(exists);
-    }
+    // @GetMapping("/{userId}/exists")
+    // public ResponseEntity<Boolean> checkUserExists(@PathVariable("userId") Long userId) {
+    //     boolean exists = userService.existsById(userId);
+    //     return ResponseEntity.ok(exists);
+    // }
 
     @GetMapping("/by-ids")
     public ResponseEntity<ApiResponseDTO<List<UserResponseDTO>>> getUsersByIds(
@@ -97,5 +102,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Redis connection failed: " + e.getMessage());
         }
+    }
+
+
+    @GetMapping("/{userId}/exists")
+    public ResponseEntity<Boolean> checkExistUser(@PathVariable Long userId, 
+                                                 @RequestHeader("API_KEY_INTERNAL") String apiKey) {
+        if (!apiKeyValidator.isValid(apiKey)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid API Key");
+        }
+        boolean exists = userRepository.existsById(userId);
+        return ResponseEntity.ok(exists);
     }
 }

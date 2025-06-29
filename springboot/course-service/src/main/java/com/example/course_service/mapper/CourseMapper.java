@@ -20,6 +20,7 @@ public class CourseMapper {
         dto.setId(course.getId());
         dto.setTitle(course.getTitle());
         dto.setDescription(course.getDescription());
+        dto.setUserId(course.getUserId());
         dto.setImage(course.getImage());
 
         CategoryResponseDTO category = categoryMapper.toDTO(course.getCategory());

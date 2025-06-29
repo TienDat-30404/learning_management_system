@@ -13,6 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CustomPageDTO<T> {
     private List<T> content; 
-    private Long totalElemtns; 
-    private Integer totalPage;
+    private Long totalElements; 
+    private Integer totalPages;
 }

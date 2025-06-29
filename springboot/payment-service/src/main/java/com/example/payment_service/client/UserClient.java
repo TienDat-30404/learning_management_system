@@ -16,9 +16,5 @@ public interface UserClient {
     @GetMapping("/api/v1/users/{userId}/exists")
     Boolean checkExistUser(@PathVariable("userId") Long userId);
 
-    @GetMapping("/api/v1/users/{userId}")
-    ApiResponseDTO<UserResponseDTO> getUserById(@PathVariable("userId") Long userId);
 
-    @GetMapping("/api/v1/users/by-ids")
-    ApiResponseDTO<List<UserResponseDTO>> getUsersByIds(@RequestParam("ids") List<Long> userIds);
 }

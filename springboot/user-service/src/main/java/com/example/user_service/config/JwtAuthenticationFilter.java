@@ -1,82 +1,66 @@
+
 package com.example.user_service.config;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
-import com.example.user_service.service.JwtService;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
+@Order(2)
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
-
-    @Value("${jwt.secret}")
-    private String jwtSecret;
-    // private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response,
+            @Nonnull FilterChain filterChain)
             throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("93333333jt38rj2i3rji23r");
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            System.out.println("gjnj4njt4njt4tttttttttttttttttttttt");
+            System.out.println("Already authenticated by ApiKeyFilter, skipping JWT");
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            try {
-                Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT jwt = verifier.verify(token);
-                String userId = jwt.getSubject();
-                String role = jwt.getClaim("role").asString();
-                if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    List<SimpleGrantedAuthority> authorities = role == null ? List.of()
-                            : List.of(new SimpleGrantedAuthority(role));
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId,
-                            null, authorities);
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-
-            } catch (Exception e) {
-                System.out.println("Invalid JWT token: " + e.getMessage());
+        final String userId = request.getHeader("X-User-ID");
+        final String userRoles = request.getHeader("X-User-Roles");
+        System.out.println("usserIDDDDDDDDDDDdd" + userId);
+        if (userId != null && !userId.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
+            Collection<? extends GrantedAuthority> authorities = List.of(); // Mặc định không có quyền
+            if (userRoles != null && !userRoles.isEmpty()) {
+                authorities = Arrays.stream(userRoles.split(","))
+                        .map(String::trim) 
+                        .filter(role -> !role.isEmpty()) 
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
             }
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userId,
+                    null, // Credentials (không cần pass ở đây vì đã được xác thực)
+                    authorities); // Các quyền hạn
+
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private static final Set<String> EXCLUUED_PATHS = Set.of(
-            "/api/v1/auth/login",
-            "/api/v1/auth/register",
-            "/api/v1/users/by-ids");
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getServletPath();
-        return EXCLUUED_PATHS.contains(path);
-    }
 }

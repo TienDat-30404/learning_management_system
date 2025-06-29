@@ -20,6 +20,8 @@ spring:
   profiles:
     active: dev
 
+
+  
   cloud:
     gateway:
       discovery:
@@ -27,26 +29,32 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: user-service
+
+        - id: user-service-protected-api
           uri: lb://user-service
           predicates:
             - Path=/api/v1/users/**, /api/v1/roles/**, /api/v1/auth/**
+     
         - id: course-service
           uri : lb://course-service
           predicates:
             - Path=/api/v1/categories/**, /api/v1/courses/**, /api/v1/lessons/**, /api/v1/lessons/**
+
         - id: review-service
           uri : lb://review-service
           predicates:
             - Path=/api/v1/reviews/**
+
         - id: payment-service
           uri : lb://payment-service
           predicates:
             - Path=/api/v1/paymentMethods/**, /api/v1/payments/**
+
         - id: notification-service
           uri : lb://notification-service
           predicates:
             - Path=/api/v1/notifications/**
+
         - id: enrollment-service
           uri : lb://enrollment-service
           predicates:
@@ -56,6 +64,11 @@ spring:
           uri : lb://quiz-service
           predicates:
             - Path=/api/v1/quizs/**, /api/v1/quiz-attempts/**
+
+        - id: discount-service
+          uri : lb://discount-service
+          predicates:
+            - Path=/api/v1/discounts/**
 
       globalcors:
         corsConfigurations:
@@ -83,3 +96,17 @@ eureka:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+
+jwt:
+  secret: ${JWT_SECRET}
+
+gateway:
+  public:
+    paths: 
+      POST /api/v1/auth/**,
+      GET /api/v1/users/by-ids,
+      GET /api/v1/categories,
+      GET /api/v1/courses,
+      GET /api/v1/paymentMethods,
+      GET /api/v1/users/*/exists,
+      GET /api/v1/gateway/courses

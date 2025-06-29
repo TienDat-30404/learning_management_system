@@ -39,20 +39,20 @@ public class EnrollmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/by-user")
-    public ResponseEntity<ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>>> getAllEnrollmentByUser(
-        @RequestParam(value = "page", defaultValue = "0") int page, 
-        @RequestParam(value = "size", defaultValue = "10") int size
-    ) {
-        Long userId = authenticatedUser.getUserId();
-        Pageable pageable = PageRequest.of(page, size);
-        CustomPageDTO<EnrollmentResponseDTO> enrollments = enrollmentService.getAllEnrollmentByUser(userId, pageable); 
-        ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>> response = new ApiResponseDTO<>(
-            200, enrollments, "Get list course of user when enrollment"
-        );
+    // @GetMapping("/by-user")
+    // public ResponseEntity<ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>>> getAllEnrollmentByUser(
+    //     @RequestParam(value = "page", defaultValue = "0") int page, 
+    //     @RequestParam(value = "size", defaultValue = "10") int size
+    // ) {
+    //     Long userId = authenticatedUser.getUserId();
+    //     Pageable pageable = PageRequest.of(page, size);
+    //     CustomPageDTO<EnrollmentResponseDTO> enrollments = enrollmentService.getAllEnrollmentByUser(userId, pageable); 
+    //     ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>> response = new ApiResponseDTO<>(
+    //         200, enrollments, "Get list course of user when enrollment"
+    //     );
 
-        return ResponseEntity.ok(response);
-    }
+    //     return ResponseEntity.ok(response);
+    // }
 
     
 }

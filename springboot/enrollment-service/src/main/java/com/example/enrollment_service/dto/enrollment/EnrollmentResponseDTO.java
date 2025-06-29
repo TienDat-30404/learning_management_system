@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class EnrollmentResponseDTO {
     private Long id ;
-    private CourseResponseDTO course;
+    private Long courseId;
+    private Long userId;
     private Double progress;
 }

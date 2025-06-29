@@ -2,6 +2,7 @@ package com.example.quiz_service.service.quiz_attempt;
 
 import java.math.BigDecimal;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -34,6 +35,8 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
     private final UserClient userClient;
     private final LessonClient lessonClient;
     private final KafkaTemplate<String, QuizAttemptEvent> kafkaTemplate;
+    @Value("${internal.api.key}")
+    private String apiInternal;
 
     public QuizAttemptResponseDTO createQuizAttempt(QuizAttemptRequestDTO request, Long userId) {
         QuizAttempt quizAttempt = quizAttemptMapper.toEntity(request);

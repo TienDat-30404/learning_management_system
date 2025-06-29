@@ -12,6 +12,8 @@ public class EnrollmentMapper {
     public EnrollmentResponseDTO toDTO(Enrollment enrollment) {
         EnrollmentResponseDTO dto = new EnrollmentResponseDTO();
         dto.setId(enrollment.getId());
+        dto.setCourseId(enrollment.getCourseId());
+        dto.setUserId(enrollment.getUserId());
         dto.setProgress(enrollment.getProgress());
         return dto;
     }

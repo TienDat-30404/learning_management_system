@@ -10,19 +10,17 @@ import com.example.course_service.dto.course.CourseResquestDTO;
 import com.example.course_service.dto.course.CourseUpdatetDTO;
 import com.example.course_service.dto.user.UserResponseDTO;
 
-
 public interface CourseService {
-   
+
     public CourseResponseDTO createCourse(CourseResquestDTO courseResquestDTO);
 
     public CustomPageDTO<CourseResponseDTO> getAllCourses(Pageable pageable);
 
-    public Map<Long, UserResponseDTO> fetchUsers(List<Long> userIds);
-
-
     public CourseResponseDTO updateCourse(Long id, CourseUpdatetDTO request);
 
     public CourseResponseDTO getCourseById(Long id);
+
+    public boolean existsById(Long id);
 
     public List<CourseResponseDTO> getCourseByIds(List<Long> ids);
 

@@ -12,12 +12,13 @@ import {
   CheckCircle,
 } from 'lucide-react';
 
-
-
 import InputWithIcon from '@/components/form/InputWithIcon';
 import { LoginFormData, ValidationErrorsLogin } from '@/types/auth';
 import { login } from '@/services/auth/auth';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { AppDispatch  } from '@/store';
+import { loginSuccess } from '@/store/userSlice';
 
 const LoginPage = () => {
   const router = useRouter()
@@ -26,12 +27,12 @@ const LoginPage = () => {
     password: ''
   });
 
+  const dispatch = useDispatch<AppDispatch>()
+
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ValidationErrorsLogin>({});
   const [loginStatus, setLoginStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -60,18 +61,29 @@ const LoginPage = () => {
         password: formData.password
       });
 
-
       if (response.status === 200) {
-        console.log("fff", response)
-        console.log("accessToken", response.data.data.accessToken)
+        const userInfo = response.data.data.userInfo;
+        dispatch(loginSuccess({
+          id: userInfo.id,
+          fullName: userInfo.fullName,
+          role: userInfo.role.name,
+          email: userInfo.email,
+          gender: userInfo.gender,
+          birthDate: userInfo.birthDate
+        }))
         localStorage.setItem('accessToken', response.data.data.accessToken);
         setLoginStatus('success');
-        router.push("/")
+        if (userInfo.role.name === 'User') {
+          router.push('/');
+        } else if (userInfo.role.name === 'Teacher') {
+          router.push('/teacher');
+        } else if (userInfo.role.name === 'Admin') {
+          router.push('/admin');
+        }
       }
     }
-    catch (error : any) {
-      
-      if(error.response && error.response.data && error.response.data.errors) {
+    catch (error: any) {
+      if (error.response && error.response.data && error.response.data.errors) {
         const apiErrors = error.response?.data?.errors;
 
         if (apiErrors) {
@@ -82,7 +94,6 @@ const LoginPage = () => {
         }
         setLoginStatus('error');
       }
-
 
       else {
         setErrors(prev => ({
@@ -95,7 +106,6 @@ const LoginPage = () => {
     finally {
       setIsLoading(false);
     }
-
   };
 
   const handleSocialLogin = (provider: string) => {

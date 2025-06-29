@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.review_service.config.FeignClientConfig;
@@ -20,6 +21,6 @@ public interface UserClient {
     ApiResponseDTO<UserResponseDTO> getUserById(@RequestParam("userId") Long userId);
 
     @GetMapping("/api/v1/users/{userId}/exists")
-    Boolean checkExistUser(@PathVariable("userId") Long userId);
+    Boolean checkExistUser(@PathVariable("userId") Long userId, @RequestHeader("API_KEY_INTERNAL") String apiInternal);
 
 }

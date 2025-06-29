@@ -84,5 +84,12 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
+    
+    @GetMapping("/{courseId}/exists")
+    public ResponseEntity<Boolean> checkCourseExists(@PathVariable("courseId") Long courseId) {
+        boolean exists = courseService.existsById(courseId);
+        return ResponseEntity.ok(exists);
+    }
+
 
 }

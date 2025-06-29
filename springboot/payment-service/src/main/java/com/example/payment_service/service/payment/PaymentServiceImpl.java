@@ -38,6 +38,12 @@ public class PaymentServiceImpl implements PaymentService {
             throw new EntityNotFoundException("User not found with id =" + userId);
         }
 
+        Boolean existCourse = courseClient.checkExistCourse(request.getCourseId());
+        if(!existCourse)
+         {
+            throw new EntityNotFoundException("Course not found with id = " + request.getCourseId());
+        }
+
         Payment payment = paymentMapper.toEntity(request);
         payment.setUserId(userId);
         payment.setCourseId(request.getCourseId());
@@ -55,11 +61,11 @@ public class PaymentServiceImpl implements PaymentService {
                 "Thanh toán khóa học thành công");
         kafkaTemplate.send("payment-event", paymentEvent);
 
-        ApiResponseDTO<UserResponseDTO> user = userClient.getUserById(userId);
-        ApiResponseDTO<CourseResponseDTO> course = courseClient.getCourseById(request.getCourseId());
+        // ApiResponseDTO<UserResponseDTO> user = userClient.getUserById(userId);
+        // ApiResponseDTO<CourseResponseDTO> course = courseClient.getCourseById(request.getCourseId());
         PaymentResponseDTO response = paymentMapper.toDTO(payment);
-        response.setUser(user.getData());
-        response.setCourse(course.getData());
+        // response.setUser(user.getData());
+        // response.setCourse(course.getData());
         return response;
     }
 }

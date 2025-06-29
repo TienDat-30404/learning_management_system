@@ -34,44 +34,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentMapper enrollmentMapper;
     private final CourseClient courseClient;
 
-    public Map<Long, CourseResponseDTO> fetchCourses(List<Long> courseIds) {
-        try {
-
-            ApiResponseDTO<List<CourseResponseDTO>> response = courseClient.getCourseByIds(courseIds);
-            List<CourseResponseDTO> courses = response.getData();
-            return courses.stream()
-                    .filter(course -> course != null && course.getId() != null)
-                    .collect(Collectors.toMap(CourseResponseDTO::getId, course -> course));
-        } catch (Exception e) {
-            log.error("Failed to fetch courses: {}", e.getMessage());
-            return Map.of();
-        }
-
-    }
 
     public CustomPageDTO<EnrollmentResponseDTO> getAllEnrollments(Pageable pageable) {
         try {
 
             Page<Enrollment> enrollmentPage = enrollmentRepository.findAll(pageable);
-            List<Enrollment> enrollments = enrollmentPage.getContent();
-            List<Long> courseIds = enrollments.stream().map(Enrollment::getCourseId)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-            Map<Long, CourseResponseDTO> courseMap = fetchCourses(courseIds);
-            System.out.println("idsCourse" + courseMap);
-            List<EnrollmentResponseDTO> listEnrollments = enrollments.stream()
-                    .map(enrollment -> {
-                        EnrollmentResponseDTO dto = enrollmentMapper.toDTO(enrollment);
-                        CourseResponseDTO course = courseMap.get(enrollment.getCourseId());
-                        if (course != null) {
-                            dto.setCourse(course);
-                        }
-                        return dto;
-                    })
-                    .collect(Collectors.toList());
+            Page<EnrollmentResponseDTO> enrollments = enrollmentPage.map(enrollmentMapper::toDTO);
 
             return new CustomPageDTO<>(
-                    listEnrollments, enrollmentPage.getTotalElements(), enrollmentPage.getTotalPages());
+                    enrollments.getContent(), enrollmentPage.getTotalElements(), enrollmentPage.getTotalPages());
 
         } catch (Exception e) {
             log.error("Error fetchin couses: {}", e.getMessage(), e);
@@ -79,34 +50,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
     }
 
-    public CustomPageDTO<EnrollmentResponseDTO> getAllEnrollmentByUser(Long userId, Pageable pageable) {
-        try {
-
-            Page<Enrollment> enrollmentPage = enrollmentRepository.findByUserId(userId, pageable);
-            List<Enrollment> enrollments = enrollmentPage.getContent();
-            List<Long> courseIds = enrollments.stream().map(Enrollment::getCourseId)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-
-            Map<Long, CourseResponseDTO> courseMap = fetchCourses(courseIds);
-
-            List<EnrollmentResponseDTO> listEnrollments = enrollments.stream().map(enrollment -> {
-                EnrollmentResponseDTO dto = enrollmentMapper.toDTO(enrollment);
-                CourseResponseDTO course = courseMap.get(enrollment.getCourseId());
-                if (course != null) {
-                    dto.setCourse(course);
-                }
-                return dto;
-            }).collect(Collectors.toList());
-
-            return new CustomPageDTO<>(
-                    listEnrollments, enrollmentPage.getTotalElements(), enrollmentPage.getTotalPages());
-        } catch (Exception e) {
-            log.error("Error fetchin couses: {}", e.getMessage(), e);
-            return new CustomPageDTO<>(List.of(), 0L, 0);
-        }
-
-    }
+    // public CustomPageDTO<EnrollmentResponseDTO> getAllEnrollmentByUser(Long userId, Pageable pageable) {
+    //     try {
+    //         Page<Enrollment> enrollmentPage = enrollmentRepository.findByUserId(userId, pageable);
+    //         List<Enrollment> enrollments = enrollmentPage.getContent();
+    //         List<Long> courseIds = enrollments.stream().map(Enrollment::getCourseId)
+    //                 .filter(Objects::nonNull)
+    //                 .collect(Collectors.toList());
+    //         Map<Long, CourseResponseDTO> courseMap = fetchCourses(courseIds);
+    //         List<EnrollmentResponseDTO> listEnrollments = enrollments.stream().map(enrollment -> {
+    //             EnrollmentResponseDTO dto = enrollmentMapper.toDTO(enrollment);
+    //             CourseResponseDTO course = courseMap.get(enrollment.getCourseId());
+    //             if (course != null) {
+    //                 dto.setCourse(course);
+    //             }
+    //             return dto;
+    //         }).collect(Collectors.toList());
+    //         return new CustomPageDTO<>(
+    //                 listEnrollments, enrollmentPage.getTotalElements(), enrollmentPage.getTotalPages());
+    //     } catch (Exception e) {
+    //         log.error("Error fetchin couses: {}", e.getMessage(), e);
+    //         return new CustomPageDTO<>(List.of(), 0L, 0);
+    //     }
+    // }
 
     public void addEnrollment(EnrollmentRequestDTO request) {
         request.setProgress(Double.valueOf(0));
@@ -116,8 +82,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     public void updateProgressForUser(Long userId, Long courseId) {
         Optional<Enrollment> enrollmentOtp = enrollmentRepository.findByUserIdAndCourseId(userId, courseId);
-        System.out.println("userIddđ" + userId);
-        System.out.println("enrollmentOtppppppppppppppp" + enrollmentOtp);
         if (enrollmentOtp.isPresent()) {
             Enrollment enrollment = enrollmentOtp.get();
             Long totalLessonInCourse = courseClient.getTotalLessonInCourse(courseId);

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @SpringBootApplication
-@RestController
 @EnableFeignClients
 @EnableCaching
 public class CourseServiceApplication {

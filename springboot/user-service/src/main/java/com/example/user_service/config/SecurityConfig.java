@@ -16,31 +16,49 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ApiKeyFilter apiKeyFilter;
+
+    public SecurityConfig(ApiKeyFilter apiKeyFilter, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.apiKeyFilter = apiKeyFilter;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        
         http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll() 
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                    // Public endpoints (không cần xác thực)
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                    .requestMatchers("/error").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/users/by-ids").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/by-ids").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyAuthority("Admin")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAnyAuthority("Admin")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAnyAuthority("Admin")
-
-
-                        .requestMatchers(HttpMethod.GET, "/api/v1/roles").hasAnyAuthority("Admin")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/roles").hasAnyAuthority("Admin")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/roles/**").hasAnyAuthority("Admin")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/**").hasAnyAuthority("Admin")
-
-                        .requestMatchers("/error").permitAll()
-                        .anyRequest().authenticated()
-                        )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                    
+                    // API Key only endpoints (chỉ cần X-API-Key)
+                    // .requestMatchers(HttpMethod.GET, "/api/v1/users/by-ids").hasAuthority("ROLE_INTERNAL")
+                    .requestMatchers("/api/v1/users/*/exists").hasAnyAuthority("ROLE_INTERNAL")
+                    
+                    // JWT + Role based endpoints (cần JWT token và role Admin)
+                    .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAuthority("Admin")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAuthority("Admin")
+                    .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAuthority("Admin")
+                    
+                    .requestMatchers(HttpMethod.GET, "/api/v1/roles").hasAuthority("Admin")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/roles").hasAuthority("Admin")
+                    .requestMatchers(HttpMethod.PUT, "/api/v1/roles/**").hasAuthority("Admin")
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/**").hasAuthority("Admin")
+                    
+                    // Tất cả các request khác cần xác thực
+                    .anyRequest().authenticated())
+            
+            // Thêm các filter theo thứ tự
+            .addFilterBefore(this.apiKeyFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

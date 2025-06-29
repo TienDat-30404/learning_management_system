@@ -13,8 +13,10 @@ import lombok.Data;
 @Data
 public class PaymentResponseDTO {
     private Long id;
-    private UserResponseDTO user;
-    private CourseResponseDTO course; 
+    // private UserResponseDTO user;
+    // private CourseResponseDTO course; 
+    private Long userId;
+    private Long courseId;
     private BigDecimal amount; 
     private PaymentStatus paymentStatus;
     private LocalDateTime paymentDate;

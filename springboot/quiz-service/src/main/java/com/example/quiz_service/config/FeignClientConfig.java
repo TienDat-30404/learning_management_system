@@ -1,34 +1,38 @@
 package com.example.quiz_service.config;
 
-
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
 
 @Configuration
 public class FeignClientConfig implements RequestInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(FeignClientConfig.class); 
+    private static final Logger logger = LoggerFactory.getLogger(FeignClientConfig.class);
 
     @Override
     public void apply(RequestTemplate template) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes != null) {
-            HttpServletRequest request = attributes.getRequest();
-            String authHeader = request.getHeader("Authorization");
+       
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (authHeader != null && !authHeader.isEmpty()) {
-                template.header("Authorization", authHeader);
-            }
-        } 
-        else {
-            logger.warn("No RequestContext found, unable to add Authorization header.");
+        if (authentication != null && authentication.isAuthenticated()) {
+            String userId = authentication.getName(); 
+            String userRoles = authentication.getAuthorities().stream()
+                                    .map(GrantedAuthority::getAuthority)
+                                    .collect(Collectors.joining(","));
+
+            template.header("X-User-ID", userId);
+            template.header("API_KEY_INTERNAL", "123456789");
+            template.header("X-User-Roles", userRoles);
+            logger.info("Added X-User-ID: {} and X-User-Roles: {} to Feign request.", userId, userRoles);
+        } else {
+            logger.warn("No authenticated user in SecurityContext. X-User-ID and X-User-Roles headers not added to Feign request.");
         }
     }
 }

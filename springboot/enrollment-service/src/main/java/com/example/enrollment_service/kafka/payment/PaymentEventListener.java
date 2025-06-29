@@ -20,7 +20,6 @@ public class PaymentEventListener {
         containerFactory = "kafkaListenerContainerFactory"
     )
     public void handleAddErollmentOfPaymentEvent(PaymentEvent paymentEvent) {
-        System.out.println("0000000000000000000000000000" + paymentEvent.getUserId());
         EnrollmentRequestDTO request = new EnrollmentRequestDTO();
         request.setUserId(paymentEvent.getUserId());
         request.setCourseId(paymentEvent.getCourseId());
@@ -29,3 +28,7 @@ public class PaymentEventListener {
         enrollmentService.addEnrollment(request);
     }
 }
+
+
+
+

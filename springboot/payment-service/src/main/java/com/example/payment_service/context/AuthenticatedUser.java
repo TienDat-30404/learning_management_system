@@ -10,4 +10,6 @@ public class AuthenticatedUser {
         String userIdStr = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return Long.parseLong(userIdStr);
     }
+
+    
 }
