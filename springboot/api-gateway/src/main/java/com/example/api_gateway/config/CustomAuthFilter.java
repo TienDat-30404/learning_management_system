@@ -44,10 +44,16 @@ public class CustomAuthFilter implements WebFilter, Ordered {
         String path = request.getURI().getPath();
         HttpMethod method = request.getMethod();
         
-        System.out.println("=== WEB FILTER TRIGGERED ===");
-        System.out.println("methodddddd" + method);
-        System.out.println("pathhhhhh" + path);
-        
+        // System.out.println("=== WEB FILTER TRIGGERED ===");
+        // System.out.println("methodddddd" + method);
+        // System.out.println("pathhhhhh" + path);
+
+         if (HttpMethod.OPTIONS.equals(method)) {
+            LOGGER.debug("Skipping authentication for OPTIONS request: {}", path);
+            return chain.filter(exchange); // Cho phép OPTIONS request đi qua ngay lập tức
+        }
+
+        // System.out.println("checkBoolean" + isPublicPath(path, method));
         // Bỏ qua authentication cho các endpoint public
         if (isPublicPath(path, method)) {
             LOGGER.debug("Skipping authentication for public path: {}", path);
@@ -95,8 +101,8 @@ public class CustomAuthFilter implements WebFilter, Ordered {
     }
 
     private boolean isPublicPath(String requestPath, HttpMethod requestMethod) {
-        System.out.println("requestPathhhh" + requestPath);
-        System.out.println("requestMethoddđ" + requestMethod);
+        // System.out.println("requestPathhhh" + requestPath);
+        // System.out.println("requestMethoddđ" + requestMethod);
 
         if (publicPathsRaw == null || publicPathsRaw.isEmpty()) {
             System.out.println("No public paths configured");
@@ -130,12 +136,13 @@ public class CustomAuthFilter implements WebFilter, Ordered {
                         return false;
                     }
                 
-
+                    // System.out.println("111111111111111111" + configuredPathPattern);
+                    // System.out.println("22222222222222222222" + requestPath);
                     boolean methodMatches = (configuredMethod == null || configuredMethod.equals(requestMethod));
                     boolean pathMatches = pathMatcher.match(configuredPathPattern, requestPath);
 
-                    System.out.println("methodMathcessss" + methodMatches);
-                    System.out.println("pathMatchesss" + pathMatches);
+                    // System.out.println("methodMathcessss" + methodMatches);
+                    // System.out.println("pathMatchesss" + pathMatches);
 
                     return methodMatches && pathMatches;
                 });
@@ -146,3 +153,4 @@ public class CustomAuthFilter implements WebFilter, Ordered {
         return -1; // Đảm bảo filter này chạy trước các filter khác
     }
 }
+

@@ -19,6 +19,7 @@ import com.example.review_service.dto.CustomPageDTO;
 import com.example.review_service.dto.review.ReviewRequestDTO;
 import com.example.review_service.dto.review.ReviewResponseDTO;
 import com.example.review_service.dto.review.ReviewUpdateDTO;
+import com.example.review_service.enums.TargetType;
 import com.example.review_service.service.ReviewService;
 
 import jakarta.validation.Valid;
@@ -33,10 +34,12 @@ public class ReviewController {
 
     @GetMapping
     public ResponseEntity<ApiResponseDTO<CustomPageDTO<ReviewResponseDTO>>> getAllReviews(
+            @RequestParam(value = "targetId") Long targetId,
+            @RequestParam(value = "targetType") TargetType targetType,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        CustomPageDTO<ReviewResponseDTO> reviews = reviewService.getAllReviews(pageable);
+        CustomPageDTO<ReviewResponseDTO> reviews = reviewService.getAllReviews(pageable, targetId, targetType);
         ApiResponseDTO<CustomPageDTO<ReviewResponseDTO>> resposne = new ApiResponseDTO<>(
                 200, reviews, "List reviews");
         return ResponseEntity.ok(resposne);

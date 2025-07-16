@@ -15,6 +15,7 @@ public class ReviewMapper {
         dto.setRating(review.getRating());
         dto.setTargetType(review.getTargetType());
         dto.setTargetId(review.getTargetId());
+        dto.setCreatedAt(review.getCreatedAt());
 
         return dto;
     }

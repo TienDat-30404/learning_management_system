@@ -7,5 +7,7 @@ import lombok.Data;
 @Data
 public class LessonProgressResponseDTO {
     private Long id;
-    private UserResponseDTO user;
+    // private UserResponseDTO user;
+    private Long lessonId;
+    private Boolean completed;
 }

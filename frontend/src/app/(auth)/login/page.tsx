@@ -61,6 +61,8 @@ const LoginPage = () => {
         password: formData.password
       });
 
+      console.log("response", response)
+
       if (response.status === 200) {
         const userInfo = response.data.data.userInfo;
         dispatch(loginSuccess({
@@ -125,7 +127,6 @@ const LoginPage = () => {
       <div className="relative z-10 w-full max-w-md">
         {/* Login Card */}
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 transform transition-all duration-300 hover:shadow-3xl">
-          {/* Logo & Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl mb-4 shadow-lg">
               <BookOpen className="w-8 h-8 text-white" />

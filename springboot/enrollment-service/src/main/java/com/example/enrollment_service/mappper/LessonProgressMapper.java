@@ -12,6 +12,8 @@ public class LessonProgressMapper {
     public LessonProgressResponseDTO toDTO(LessonProgress lessonProgress) {
         LessonProgressResponseDTO dto = new LessonProgressResponseDTO();
         dto.setId(lessonProgress.getId());
+        dto.setCompleted(lessonProgress.getCompleted());
+        dto.setLessonId(lessonProgress.getLessonId());
         return dto;
     }
 

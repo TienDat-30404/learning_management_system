@@ -22,37 +22,38 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/enrollments")
 @RestController
 public class EnrollmentController {
-    private final EnrollmentService enrollmentService; 
+    private final EnrollmentService enrollmentService;
     private final AuthenticatedUser authenticatedUser;
 
     @GetMapping
     public ResponseEntity<ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>>> getAllEnrollments(
-        @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "10") int size
-    ) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        Long userId = authenticatedUser.getUserId();
         Pageable pageable = PageRequest.of(page, size);
-        CustomPageDTO<EnrollmentResponseDTO> enrollments = enrollmentService.getAllEnrollments(pageable);
+        CustomPageDTO<EnrollmentResponseDTO> enrollments = enrollmentService.getCourseProgressOfUser(userId, pageable);
         ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>> response = new ApiResponseDTO<>(
-            200, enrollments, "List enrollment successful"
-        );
+                200, enrollments, "List enrollment successful");
 
         return ResponseEntity.ok(response);
     }
 
     // @GetMapping("/by-user")
-    // public ResponseEntity<ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>>> getAllEnrollmentByUser(
-    //     @RequestParam(value = "page", defaultValue = "0") int page, 
-    //     @RequestParam(value = "size", defaultValue = "10") int size
+    // public ResponseEntity<ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>>>
+    // getAllEnrollmentByUser(
+    // @RequestParam(value = "page", defaultValue = "0") int page,
+    // @RequestParam(value = "size", defaultValue = "10") int size
     // ) {
-    //     Long userId = authenticatedUser.getUserId();
-    //     Pageable pageable = PageRequest.of(page, size);
-    //     CustomPageDTO<EnrollmentResponseDTO> enrollments = enrollmentService.getAllEnrollmentByUser(userId, pageable); 
-    //     ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>> response = new ApiResponseDTO<>(
-    //         200, enrollments, "Get list course of user when enrollment"
-    //     );
+    // Long userId = authenticatedUser.getUserId();
+    // Pageable pageable = PageRequest.of(page, size);
+    // CustomPageDTO<EnrollmentResponseDTO> enrollments =
+    // enrollmentService.getAllEnrollmentByUser(userId, pageable);
+    // ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>> response = new
+    // ApiResponseDTO<>(
+    // 200, enrollments, "Get list course of user when enrollment"
+    // );
 
-    //     return ResponseEntity.ok(response);
+    // return ResponseEntity.ok(response);
     // }
 
-    
 }

@@ -1,6 +1,9 @@
 package com.example.enrollment_service.service.lesson_progress;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,12 +32,11 @@ public class LessonProgressServiceImpl implements LessonProgressService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseClient courseClient;
     private final UserClient userClient;
-    
+
     @Value("${internal.api.key}")
     private String apiInternal;
 
     public void addLessonProgressForUser(LessonProgressRequestDTO request) {
-        System.out.println("apiInternallllllllllll" + apiInternal);
         Boolean existUser = userClient.checkExistUser(request.getUserId());
         if (!existUser) {
             throw new EntityNotFoundException("User not found with id = " + request.getUserId());
@@ -73,6 +75,36 @@ public class LessonProgressServiceImpl implements LessonProgressService {
         // ApiResponseDTO<UserResponseDTO> user = userClient.getUserById(userId);
         // response.setUser(user.getData());
         return response;
+    }
+
+    public Long getTotalLessonCompleted(Long userId, Long courseId) {
+        return lessonProgressRepository.countByUserIdAndCourseIdAndCompletedTrue(userId, courseId);
+    }
+
+    public List<LessonProgressResponseDTO> getLessonsCompleted(List<Long> lessonIds, Long userId) {
+        List<LessonProgress> lessonsProgress = lessonProgressRepository
+                .findByLessonIdInAndUserIdAndCompletedTrue(lessonIds, userId);
+        Map<Long, LessonProgress> lessonProgressMap = lessonsProgress.stream()
+                .collect(Collectors.toMap(LessonProgress::getLessonId, dc -> dc));
+
+        return lessonIds.stream()
+                .map(lessonId -> {
+                    LessonProgressResponseDTO dto = new LessonProgressResponseDTO();
+
+                    LessonProgress data = lessonProgressMap.get(lessonId);
+
+                    if (data != null) {
+                        dto.setId(data.getId());
+                        dto.setCompleted(data.getCompleted());
+                        dto.setLessonId(data.getLessonId());
+                        
+                    }  else {
+                        dto.setCompleted(false);
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
 }

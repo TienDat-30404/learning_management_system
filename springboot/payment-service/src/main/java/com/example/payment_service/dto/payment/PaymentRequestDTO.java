@@ -1,7 +1,6 @@
 package com.example.payment_service.dto.payment;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import com.example.payment_service.enums.PaymentStatus;
 
@@ -16,9 +15,10 @@ public class PaymentRequestDTO {
 
     @NotNull(message = "Amount cannot be null")
     private BigDecimal amount;
-    private PaymentStatus paymentStatus;
-    private LocalDateTime paymentDate;
+    private PaymentStatus paymentStatus = PaymentStatus.PAID;
 
     @NotNull(message = "Payment Method ID cannot be null")
     private Long paymentMethodId;
+
+    private Long discountId;
 }

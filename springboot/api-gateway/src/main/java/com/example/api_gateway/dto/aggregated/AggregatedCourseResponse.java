@@ -15,6 +15,7 @@ public class AggregatedCourseResponse {
     private String title;
     private String description;
     private String image;
+    private String learningOutcomes;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long userId;

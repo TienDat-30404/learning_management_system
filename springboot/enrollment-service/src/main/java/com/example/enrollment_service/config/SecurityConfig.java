@@ -26,8 +26,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(HttpMethod.GET, "/api/v1/enrollments").hasAnyAuthority("Admin", "Manager")
+                    // .requestMatchers(HttpMethod.GET, "/api/v1/enrollments").hasAnyAuthority("Admin", "Manager")
                     
+
+                    .requestMatchers(HttpMethod.GET, "/api/v1/lesson-progress/**").permitAll()
+
+
                     .requestMatchers("/error").permitAll()
                     .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

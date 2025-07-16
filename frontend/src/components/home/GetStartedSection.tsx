@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useGetAllCategories } from '@/hooks/useCategories';
 import { getAllCategory } from '@/services/categories/categories';
-import { Category } from '@/types/categories';
+import { Category } from '@/types/category';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const GetStartedSection: React.FC = () => {
@@ -55,6 +55,16 @@ const GetStartedSection: React.FC = () => {
     const handleSwitchPage = (page : number) => {
         setPage(page)
     }
+
+
+     const g = async() => {
+        const vvv = await fetch('http://localhost:8080/api/v1/gateway/courses?page=0&size=2')
+        console.log("vvv", vvv)
+    }
+
+    console.log("ịi23rji3nr23")
+    g()
+
 
     return (
         <section className="py-16 bg-gray-50">

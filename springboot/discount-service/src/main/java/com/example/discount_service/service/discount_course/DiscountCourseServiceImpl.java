@@ -29,6 +29,8 @@ public class DiscountCourseServiceImpl implements DiscountCourseService {
         Map<Long, DiscountCourse> discountCourseMap = discountCourses.stream()
             .collect(Collectors.toMap(DiscountCourse::getCourseId, dc -> dc));
 
+        System.out.println("discountCourseMappp" + discountCourseMap);
+
         return courseIds.stream()
             .map(courseId -> {
                 DiscountCourseReponseDTO dto = new DiscountCourseReponseDTO();

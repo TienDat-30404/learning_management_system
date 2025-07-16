@@ -18,5 +18,6 @@ public class CourseResponseDTO {
     private String image;
     private Long userId;
     private CategoryResponseDTO category;
+    private String learningOutcomes;
     private BigDecimal price;
 }

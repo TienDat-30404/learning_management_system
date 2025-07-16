@@ -3,6 +3,8 @@ package com.example.payment_service.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.example.payment_service.enums.PaymentStatus;
 
 import jakarta.persistence.Entity;
@@ -33,15 +35,22 @@ public class Payment extends BaseEntity {
     @NotNull(message = "Course Id cannot be null")
     private Long courseId;
 
+    private Long discountId;
+
     @NotNull(message = "Amount cannot be null")
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+
+    @CreationTimestamp
     private LocalDateTime paymentDate;
 
     @ManyToOne 
     @JoinColumn(name = "payment_method_id", referencedColumnName = "id", nullable = false)
     private PaymentMethod paymentMethod;
-
 }
+
+
+
+// 9704198526191432198

@@ -8,7 +8,7 @@ import com.example.enrollment_service.dto.enrollment.EnrollmentResponseDTO;
 import com.example.enrollment_service.dto.enrollment.EnrollmentUpdateDTO;
 
 public interface EnrollmentService  {
-    public CustomPageDTO<EnrollmentResponseDTO> getAllEnrollments( Pageable pageable);
+    public CustomPageDTO<EnrollmentResponseDTO> getCourseProgressOfUser(Long userId, Pageable pageable);
     public void addEnrollment(EnrollmentRequestDTO request);
     // public CustomPageDTO<EnrollmentResponseDTO> getAllEnrollmentByUser(Long userId, Pageable pageable);
     public void updateProgressForUser(Long userId, Long courseId);

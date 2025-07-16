@@ -27,4 +27,10 @@ public class CourseGatewayController {
                 .map(data -> ResponseEntity.ok(
                         new ApiResponseDTO<>(200, data, "Lấy danh sách thành công")));
     }
+
+     @GetMapping("/{courseId}")
+    public Mono<ApiResponseDTO<AggregatedCourseResponse>> getAggregatedCourseDetail(@PathVariable Long courseId) {
+        return service.getCourseDetail(courseId)
+                .map(course -> new ApiResponseDTO<>(200, course, "Chi tiết khóa học"));
+    }
 }

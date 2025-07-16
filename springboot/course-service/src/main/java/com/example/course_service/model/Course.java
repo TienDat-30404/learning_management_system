@@ -16,13 +16,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-
 @Entity
 @Table(name = "courses")
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class Course extends BaseEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,8 +31,11 @@ public class Course extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    @NotBlank(message = "Description is required")    
+    @NotBlank(message = "Description is required")
     private String description;
+
+    @Column(name = "learning_outcomes", columnDefinition = "TEXT")
+    private String learningOutcomes;
 
     @Column(nullable = false)
     @NotBlank(message = "Image is required")
@@ -41,8 +43,7 @@ public class Course extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
-    private Category category;  
-
+    private Category category;
 
     @Column(nullable = false)
     private Long userId;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useGetAllCourse } from '@/hooks/useCourses';
-import { Course } from '@/types/courses';
+import { Course } from '@/types/course';
 
 
 interface FeaturedCoursesProps {
@@ -33,12 +33,14 @@ const FeaturedCourses: React.FC<FeaturedCoursesProps> = ({
         ));
     };
 
+
     const [page, setPage] = useState<number>(0);
     const { data: coursess, isLoading, error } = useGetAllCourse({
         page: Number(page),
         size: 4
     })
-    console.log("coursess", coursess)
+
+
 
     return (
         <section className="py-16 bg-white">
@@ -124,18 +126,34 @@ const FeaturedCourses: React.FC<FeaturedCoursesProps> = ({
 
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center">
-                                        <span className="text-lg font-bold text-gray-900">{course.price}</span>
-                                        {/* {course.originalPrice && ( */}
-                                        <span className="text-sm text-gray-500 line-through ml-2">
-                                            {/* {course.originalPrice} */}
-                                            200.000đ
+
+                                        <span className="text-lg font-bold text-gray-900 mr-2">
+                                            {course?.discount?.value === null ? (
+                                                course?.price
+                                            ) :
+                                                course?.discount?.discountType === "PERCENT" ?
+                                                    course?.price * (1 - course?.discount?.value / 100) :
+                                                    course?.price - course?.discount?.value
+                                            }
                                         </span>
-                                        {/* )} */}
+                                        {/* {course.originalPrice && ( */}
+                                        {course?.discount?.value != null && (
+                                            <div>
+                                                <span>-</span>
+                                                <span className="text-sm text-gray-500 line-through">
+                                                    {
+                                                        course?.discount?.discountType === "PERCENT" ?
+                                                            course?.discount?.value + "%" :
+                                                            (course?.price).toLocaleString('vi-VN') + "đ"
+                                                    }
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {!showPreview ? (
                                         <Link
-                                            href={`/courses/${course.id}`}
+                                            href={`/course/${course.id}`}
                                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                                         >
                                             Xem chi tiết

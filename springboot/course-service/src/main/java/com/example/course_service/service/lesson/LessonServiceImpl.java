@@ -1,16 +1,20 @@
 package com.example.course_service.service.lesson;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.course_service.dto.CustomPageDTO;
+import com.example.course_service.dto.course.CourseResponseDTO;
 import com.example.course_service.dto.lesson.LessonRequestDTO;
 import com.example.course_service.dto.lesson.LessonResponseDTO;
 import com.example.course_service.dto.lesson.LessonUpdateDTO;
+import com.example.course_service.mapper.CourseMapper;
 import com.example.course_service.mapper.LessonMapper;
 import com.example.course_service.repository.CourseRepository;
 import com.example.course_service.repository.LessonRepository;
@@ -30,15 +34,36 @@ public class LessonServiceImpl implements LessonService {
     private final LessonMapper lessonMapper;
     private final CloudinaryService cloudinaryService;
     private final CourseRepository courseRepository;
+    private final CourseMapper courseMapper;
 
-    public CustomPageDTO<LessonResponseDTO> getAllLessonsOfCourse(Pageable pageable, Long courseId) {
+    // public Map<String, Object> getAllLessonsOfCourse(Pageable pageable, Long courseId) {
+    //     Course course = courseRepository.findById(courseId)
+    //         .orElseThrow(() -> new EntityNotFoundException("Course does exist with id = " + courseId));
+    //     CourseResponseDTO courseData = courseMapper.toDTO(course);
+
+    //     Page<Lesson> lessonPage = lessonRepository.findByCourseId(pageable, courseId);
+    //     Page<LessonResponseDTO> lessons = lessonPage.map(lessonMapper::toDTO);
+    //     CustomPageDTO listLessons = new CustomPageDTO<>(
+    //             lessons.getContent(),
+    //             lessons.getTotalElements(),
+    //             lessons.getTotalPages());
+    //     Map<String, Object> response = new HashMap();
+    //     response.put("course", courseData);
+    //     response.put("lessons", listLessons);
+    //     return response;
+        
+    // }
+
+     public CustomPageDTO<LessonResponseDTO> getAllLessonsOfCourse(Pageable pageable, Long courseId) {
+        Course course = courseRepository.findById(courseId)
+            .orElseThrow(() -> new EntityNotFoundException("Course does exist with id = " + courseId));
         Page<Lesson> lessonPage = lessonRepository.findByCourseId(pageable, courseId);
         Page<LessonResponseDTO> lessons = lessonPage.map(lessonMapper::toDTO);
         return new CustomPageDTO<>(
                 lessons.getContent(),
                 lessons.getTotalElements(),
                 lessons.getTotalPages());
-    }
+     }
 
     public LessonResponseDTO createLesson(LessonRequestDTO request) {
         Lesson lesson = lessonMapper.toEntity(request);

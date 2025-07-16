@@ -17,6 +17,7 @@ import com.example.review_service.dto.review.ReviewRequestDTO;
 import com.example.review_service.dto.review.ReviewResponseDTO;
 import com.example.review_service.dto.review.ReviewUpdateDTO;
 import com.example.review_service.dto.user.UserResponseDTO;
+import com.example.review_service.enums.TargetType;
 import com.example.review_service.mapper.ReviewMapper;
 import com.example.review_service.model.Review;
 import com.example.review_service.repository.ReviewRepository;
@@ -50,8 +51,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     }
 
-    public CustomPageDTO<ReviewResponseDTO> getAllReviews(Pageable pageable) {
-        Page<Review> pageReview = reviewRepository.findAll(pageable);
+    public CustomPageDTO<ReviewResponseDTO> getAllReviews(Pageable pageable, Long targetId, TargetType targetType) {
+        Page<Review> pageReview = reviewRepository.findByTargetIdAndTargetType(pageable, targetId, targetType);
         List<Review> reviews = pageReview.getContent();
         List<Long> userIds = reviews.stream().map(Review::getUserId).collect(Collectors.toList());
         Map<Long, UserResponseDTO> users = fetchUsers(userIds);

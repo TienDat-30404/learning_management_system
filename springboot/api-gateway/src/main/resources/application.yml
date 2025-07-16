@@ -30,7 +30,7 @@ spring:
           lower-case-service-id: true
       routes:
 
-        - id: user-service-protected-api
+        - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/api/v1/users/**, /api/v1/roles/**, /api/v1/auth/**
@@ -83,6 +83,8 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
+        
+ 
 
 eureka:
   client:
@@ -107,6 +109,9 @@ gateway:
       GET /api/v1/users/by-ids,
       GET /api/v1/categories,
       GET /api/v1/courses,
+      GET /api/v1/courses/*,
       GET /api/v1/paymentMethods,
       GET /api/v1/users/*/exists,
-      GET /api/v1/gateway/courses
+      GET /api/v1/gateway/courses,
+      GET /api/v1/gateway/courses/*
+      GET /api/v1/gateway/lesson_progress/*

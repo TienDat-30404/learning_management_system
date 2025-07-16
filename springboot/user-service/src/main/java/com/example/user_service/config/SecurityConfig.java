@@ -46,7 +46,7 @@ public class SecurityConfig {
                     // JWT + Role based endpoints (cần JWT token và role Admin)
                     .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAuthority("Admin")
                     .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAuthority("Admin")
-                    .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAuthority("Admin")
+                    // .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAuthority("Admin")
                     
                     .requestMatchers(HttpMethod.GET, "/api/v1/roles").hasAuthority("Admin")
                     .requestMatchers(HttpMethod.POST, "/api/v1/roles").hasAuthority("Admin")

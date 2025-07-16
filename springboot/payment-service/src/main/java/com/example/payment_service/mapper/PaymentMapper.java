@@ -22,6 +22,7 @@ public class PaymentMapper {
         dto.setPaymentStatus(payment.getPaymentStatus());
         dto.setPaymentDate(payment.getPaymentDate());
 
+
         PaymentMethodResposneDTO paymentMethod = paymentMethodMapper.toDTO(payment.getPaymentMethod());
         dto.setPaymentMethod(paymentMethod);
         return dto;
@@ -31,8 +32,8 @@ public class PaymentMapper {
         Payment payment = new Payment();
         payment.setAmount(request.getAmount());
         payment.setPaymentStatus(request.getPaymentStatus());
-        payment.setPaymentDate(request.getPaymentDate());
         payment.setCourseId(request.getCourseId());
+        payment.setDiscountId(request.getDiscountId());
         return payment;
     }
 }

@@ -13,12 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.example.course_service.client.UserClient;
-import com.example.course_service.dto.ApiResponseDTO;
 import com.example.course_service.dto.CustomPageDTO;
 import com.example.course_service.dto.course.CourseResponseDTO;
 import com.example.course_service.dto.course.CourseResquestDTO;
 import com.example.course_service.dto.course.CourseUpdatetDTO;
-import com.example.course_service.dto.user.UserResponseDTO;
 import com.example.course_service.mapper.CourseMapper;
 import com.example.course_service.model.Course;
 import com.example.course_service.model.Category;
@@ -48,7 +46,6 @@ public class CourseServiceImpl implements CourseService {
         if (userExists == null || !userExists) {
             throw new IllegalArgumentException("User with id " + userId + " does not exist");
         }
-  
 
         String imageUrl = null;
 
@@ -80,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
 
             Page<Course> coursePage = courseRepository.findAll(pageable);
             Page<CourseResponseDTO> courses = coursePage.map(courseMapper::toDTO);
- 
+            System.out.println("coursessss" + courses.getContent());
             return new CustomPageDTO<>(
                     courses.getContent(),
                     coursePage.getTotalElements(),
@@ -90,8 +87,6 @@ public class CourseServiceImpl implements CourseService {
             return new CustomPageDTO<>(List.of(), 0L, 0);
         }
     }
-
-   
 
     public CourseResponseDTO updateCourse(Long id, CourseUpdatetDTO request) {
         Course course = courseRepository.findById(id)
@@ -114,7 +109,8 @@ public class CourseServiceImpl implements CourseService {
 
         courseMapper.updateCourseFromDTO(request, course);
         Course updatedCourse = courseRepository.save(course);
-        // ApiResponseDTO<UserResponseDTO> userResponse = userClient.getUserById(updatedCourse.getUserId());
+        // ApiResponseDTO<UserResponseDTO> userResponse =
+        // userClient.getUserById(updatedCourse.getUserId());
         CourseResponseDTO responseDTO = courseMapper.toDTO(updatedCourse);
         // responseDTO.setUser(userResponse.getData());
 
@@ -124,6 +120,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponseDTO getCourseById(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Course not found with id=" + id));
+        System.out.println("detailCOurseeeeee" + course);
         return courseMapper.toDTO(course);
     }
 
@@ -134,7 +131,7 @@ public class CourseServiceImpl implements CourseService {
         return response;
     }
 
-       public boolean existsById(Long id) {
+    public boolean existsById(Long id) {
         return courseRepository.existsById(id);
     }
 

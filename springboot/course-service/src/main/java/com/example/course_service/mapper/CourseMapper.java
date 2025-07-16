@@ -16,13 +16,15 @@ import lombok.Data;
 public class CourseMapper {
     private final CategoryMapper categoryMapper;
     public CourseResponseDTO toDTO(Course course) {
+        System.out.println("courseeeeeeeee" + course);
+        System.out.println("LearningComeoutsss" + course.getLearningOutcomes());
         CourseResponseDTO dto = new CourseResponseDTO();
         dto.setId(course.getId());
         dto.setTitle(course.getTitle());
         dto.setDescription(course.getDescription());
         dto.setUserId(course.getUserId());
         dto.setImage(course.getImage());
-
+        dto.setLearningOutcomes(course.getLearningOutcomes());
         CategoryResponseDTO category = categoryMapper.toDTO(course.getCategory());
         dto.setCategory(category);
 

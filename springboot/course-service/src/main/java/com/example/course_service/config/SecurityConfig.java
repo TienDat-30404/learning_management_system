@@ -27,6 +27,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/lessons?courseId=40").permitAll()
+
                     .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")
                     .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")

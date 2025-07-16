@@ -11,6 +11,6 @@ import com.example.enrollment_service.model.Enrollment;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
      Page<Enrollment> findByUserId(Long userId, Pageable pageable);
-
+     
      Optional<Enrollment> findByUserIdAndCourseId(Long userId, Long courseId);
 }

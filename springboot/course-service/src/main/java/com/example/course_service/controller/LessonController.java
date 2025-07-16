@@ -1,5 +1,7 @@
 package com.example.course_service.controller;
 
+import java.util.Map;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,11 +33,31 @@ public class LessonController {
 
         private final LessonService lessonService;
 
-        @GetMapping
-        public ResponseEntity<ApiResponseDTO<CustomPageDTO<LessonResponseDTO>>> getAllLessonsOfCourse(
-                        @RequestParam(value = "courseId") Long courseId,
+        // @GetMapping
+        // public ResponseEntity<ApiResponseDTO<Map<String, Object>>> getAllLessonsOfCourse(
+        //                 @RequestParam(value = "courseId") Long courseId,
+        //                 @RequestParam(value = "page", defaultValue = "0") int page,
+        //                 @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        //         Pageable pageable = PageRequest.of(page, size);
+
+        //         // Gọi service và nhận về Map<String, Object>
+        //         Map<String, Object> responseData = lessonService.getAllLessonsOfCourse(pageable, courseId);
+
+        //         // Đóng gói Map này vào ApiResponseDTO
+        //         ApiResponseDTO<Map<String, Object>> apiResponse = new ApiResponseDTO<>(
+        //                         200, responseData, "List all lessons for course");
+
+        //         return ResponseEntity.ok(apiResponse);
+        // }
+
+
+         @GetMapping
+        public ResponseEntity<ApiResponseDTO<CustomPageDTO<LessonResponseDTO>>> getAllLessons(
                         @RequestParam(value = "page", defaultValue = "0") int page,
-                        @RequestParam(value = "size", defaultValue = "10") int size) {
+                        @RequestParam(value = "size", defaultValue = "10") int size,
+                        @RequestParam(value = "courseId") Long courseId
+                        ) {
 
                 Pageable pageable = PageRequest.of(page, size);
                 CustomPageDTO<LessonResponseDTO> lessons = lessonService.getAllLessonsOfCourse(pageable, courseId);
@@ -43,6 +65,7 @@ public class LessonController {
                                 200, lessons, "List all lessons");
                 return ResponseEntity.ok(response);
         }
+
 
         @PostMapping
         public ResponseEntity<ApiResponseDTO<LessonResponseDTO>> createLesson(
@@ -70,7 +93,6 @@ public class LessonController {
                 return ResponseEntity.ok(response);
         }
 
-        
         @GetMapping("/total-lesson")
         public Long findTotalLessonInCourse(
                         @RequestParam("courseId") Long courseId) {
@@ -91,6 +113,5 @@ public class LessonController {
                         @RequestParam("lessonId") Long lessonId) {
                 return lessonService.getCourseIdBasedOnLessonId(lessonId);
         }
-
 
 }

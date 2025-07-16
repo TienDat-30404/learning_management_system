@@ -35,10 +35,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final CourseClient courseClient;
 
 
-    public CustomPageDTO<EnrollmentResponseDTO> getAllEnrollments(Pageable pageable) {
+    public CustomPageDTO<EnrollmentResponseDTO> getCourseProgressOfUser(Long userId, Pageable pageable) {
         try {
 
-            Page<Enrollment> enrollmentPage = enrollmentRepository.findAll(pageable);
+            Page<Enrollment> enrollmentPage = enrollmentRepository.findByUserId(userId, pageable);
             Page<EnrollmentResponseDTO> enrollments = enrollmentPage.map(enrollmentMapper::toDTO);
 
             return new CustomPageDTO<>(

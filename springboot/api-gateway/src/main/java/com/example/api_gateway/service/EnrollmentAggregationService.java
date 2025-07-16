@@ -39,10 +39,10 @@ public class EnrollmentAggregationService {
                                 .bodyToMono(
                                                 new ParameterizedTypeReference<ApiResponseDTO<CustomPageDTO<AggregatedEnrollmentResponse>>>() {
                                                 });
+                        
                 return enrollmentsMono.flatMap(enrollmentResponse -> {
                         CustomPageDTO<AggregatedEnrollmentResponse> enrollmentPage = enrollmentResponse.getData();
                         List<AggregatedEnrollmentResponse> enrollments = enrollmentPage.getContent();
-
                         // Lấy danh sách courseIds và userIds trong enrollments
                         List<Long> courseIds = enrollments.stream()
                                         .map(AggregatedEnrollmentResponse::getCourseId)

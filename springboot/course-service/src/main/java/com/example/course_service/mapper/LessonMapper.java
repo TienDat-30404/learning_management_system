@@ -20,8 +20,8 @@ public class LessonMapper {
         lessonResponse.setTitle(lesson.getTitle());
         lessonResponse.setContent(lesson.getContent());
         lessonResponse.setVideoUrl(lesson.getVideoUrl());
-        CourseResponseDTO course = courseMapper.toDTO(lesson.getCourse());
-        lessonResponse.setCourse(course);
+        // CourseResponseDTO course = courseMapper.toDTO(lesson.getCourse());
+        // lessonResponse.setCourse(course);
         return lessonResponse;
     }
 
