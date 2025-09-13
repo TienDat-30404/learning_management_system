@@ -38,4 +38,7 @@ public class QuizAttempt extends BaseEntity {
     @DecimalMin(value = "0.0", inclusive = true, message = "Score must be at least 0")
     @DecimalMax(value = "10.0", inclusive = true, message = "Score must not exceed 10")
     private BigDecimal score;
+
+    @NotNull(message = "Duration must not be null")
+    private Integer duration;
 }

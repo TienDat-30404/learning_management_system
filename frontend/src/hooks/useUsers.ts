@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useGetDetailUser(idUser : number) {
     return useQuery({
-        queryKey : ['reviews', idUser],
+        queryKey : ['users', idUser],
         queryFn : () => getDetailUser(idUser).then(res => res.data)
     })
 }
@@ -17,10 +17,9 @@ export function useUpdateUser() {
     mutationFn: ({ id, data }) => updateUser(id, data).then(res => res.data),
 
     onSuccess: (updatedUser, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['reviews', variables.id] }); 
       queryClient.invalidateQueries({ queryKey: ['users', variables.id] }); 
 
-      queryClient.setQueryData(['reviews', variables.id], updatedUser);
+      queryClient.setQueryData(['users', variables.id], updatedUser);
       console.log('User updated successfully:', updatedUser);
     },
 

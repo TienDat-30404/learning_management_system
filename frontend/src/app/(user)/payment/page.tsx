@@ -23,7 +23,6 @@ const CoursePaymentPage: React.FC = () => {
   const { mutate, isError, isSuccess, data } = useProcessPaymentVnpay();
 
 
-
   const { data: detailCourse } = useGetDetailCouse(Number(courseId))
   const [selectedPayment, setSelectedPayment] = useState<number>(paymentMethods?.data?.content?.[0]?.id);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -46,6 +45,7 @@ const CoursePaymentPage: React.FC = () => {
       amount: amount,
       content: `Thanh toán khóa học ${detailCourse?.data?.title}`
     };
+    console.log("paymentBody", paymentBody)
     mutate(paymentBody)
     localStorage.setItem('informationPayment', JSON.stringify({
       courseId: courseId,

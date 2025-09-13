@@ -57,3 +57,28 @@ public class PaymentController {
     }
 
 }
+
+
+/*
+    - VNPAY : 
+        NCB
+        9704198526191432198
+        NGUYEN VAN A   
+        07/15
+        123456 
+
+    - MOMO : 
+        name : NGUYEN VAN A
+        stk : 5200 0000 0000 1096 (số thể đúng) , 5200 0000 0000 1104 (số thẻ sai)
+        05/25	
+        cvc : 111
+        otp : 1234
+
+    - ZALO pay : 
+        Số thẻ : 4111111111111111
+        Tên : 	NGUYEN VAN A
+        Ngày hết hạn : 	01/25
+        Mã CVV	123
+
+
+*/

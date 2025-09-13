@@ -120,4 +120,9 @@ public class QuizServiceImpl implements QuizService {
         response.setLesson(lesson.getData());
         return response;
     }
+
+    public boolean checkExistLesson(Long lessonId) {
+        return quizRepository.existsByLessonId(lessonId);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.quiz_service.dto.quiz_attempt;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import com.example.quiz_service.dto.quiz.QuizResponseDTO;
 import com.example.quiz_service.dto.user.UserResponseDTO;
@@ -16,4 +17,6 @@ public class QuizAttemptResponseDTO {
     private QuizResponseDTO quiz;
     private UserResponseDTO user;
     private BigDecimal score;
+    private Integer duration;
+    private LocalDateTime createdAt;
 }

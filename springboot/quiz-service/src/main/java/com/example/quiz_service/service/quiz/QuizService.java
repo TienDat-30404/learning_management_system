@@ -9,4 +9,5 @@ import com.example.quiz_service.dto.quiz.QuizResponseDTO;
 public interface QuizService {
     public QuizResponseDTO createQuiz(QuizRequestDTO request);
     public QuizResponseDTO getQuizForLesson(Long lessonId);
+    public boolean checkExistLesson(Long lessonId);
 }

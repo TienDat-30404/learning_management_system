@@ -1,10 +1,13 @@
 package com.example.quiz_service.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +54,18 @@ public class QuizAttemptController {
         CustomPageDTO<QuizAttemptResponseDTO> quizAttempts = quizAttemptService.getResultQuizByUser(pageable, userId);
         ApiResponseDTO<CustomPageDTO<QuizAttemptResponseDTO>> response = new ApiResponseDTO<>(
             200, quizAttempts, "Result exam quiz for user with id = " + userId
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/history/{quizId}")
+    public ResponseEntity<ApiResponseDTO<List<QuizAttemptResponseDTO>>> getHistoryQuizOfUser(
+        @PathVariable Long quizId
+    ) {
+        Long userId = authenticatedUser.getUserId();
+        List<QuizAttemptResponseDTO> histories =  quizAttemptService.getHistoryQuizOfUser(userId, quizId);
+        ApiResponseDTO<List<QuizAttemptResponseDTO>> response = new ApiResponseDTO<>(
+            200, histories, "List history quiz of user " + userId
         );
         return ResponseEntity.ok(response);
     }

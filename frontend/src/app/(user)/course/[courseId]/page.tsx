@@ -27,6 +27,7 @@ const CourseDetailPage: React.FC = () => {
 
   const { courseId } = useParams();
   const { data: detailCourse, isLoading, error } = useGetDetailCouse(Number(courseId))
+  console.log("dung yeu ai fo qua nhieu", detailCourse)
 
  const handleEnroll = () => {
   router.push(`/payment?courseId=${courseId}`);

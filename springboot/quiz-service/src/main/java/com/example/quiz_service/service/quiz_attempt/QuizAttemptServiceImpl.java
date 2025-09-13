@@ -1,6 +1,8 @@
 package com.example.quiz_service.service.quiz_attempt;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -49,16 +51,20 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
         Quiz quiz = quizRepository.findById(request.getQuizId())
                 .orElseThrow(() -> new EntityNotFoundException(("Quiz not found with id = " + request.getQuizId())));
         quizAttempt.setQuiz(quiz);
-        quizAttempt = quizAttemptRepository.save(quizAttempt);
-
-        Long courseId = lessonClient.findCourseIdByLessonId(quiz.getLessonId());
-        // if (request.getScore().compareTo(BigDecimal.valueOf(8)) >= 0) {
+        System.out.println("jgrjjrjjjjjjjjjjjjjjjjjjjjj"
+                + quizAttemptRepository.existsByUserIdAndQuizId(userId, request.getQuizId()));
+        if (!quizAttemptRepository.existsByUserIdAndQuizId(userId, request.getQuizId())) {
+            System.out.println("123322222222222222222222222kgjgjrgjrfgrfg");
+            Long courseId = lessonClient.findCourseIdByLessonId(quiz.getLessonId());
+            // if (request.getScore().compareTo(BigDecimal.valueOf(8)) >= 0) {
             QuizAttemptEvent quizAttemptEvent = new QuizAttemptEvent(
                     userId,
                     quiz.getLessonId(),
-                    courseId); 
+                    courseId);
             kafkaTemplate.send("quiz-attempt-event", quizAttemptEvent);
-        // }
+            // }
+        }
+        quizAttempt = quizAttemptRepository.save(quizAttempt);
         QuizAttemptResponseDTO response = quizAttemptMapper.toDTO(quizAttempt);
 
         ApiResponseDTO<UserResponseDTO> user = userClient.getUserById(userId);
@@ -73,6 +79,13 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
 
         return new CustomPageDTO<>(
                 quizAttempts.getContent(), quizAttempts.getTotalElements(), quizAttempts.getTotalPages());
+    }
+
+    public List<QuizAttemptResponseDTO> getHistoryQuizOfUser(Long userId, Long quizId) {
+        List<QuizAttempt> historyQuiz = quizAttemptRepository.findAllByUserIdAndQuizId(userId, quizId);
+         return historyQuiz.stream()
+                .map(quizAttemptMapper::toDTO) 
+                .collect(Collectors.toList());
     }
 
 }

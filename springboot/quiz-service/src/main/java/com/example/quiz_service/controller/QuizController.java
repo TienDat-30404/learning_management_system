@@ -3,6 +3,7 @@ package com.example.quiz_service.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,12 @@ public class QuizController {
         QuizResponseDTO quiz = quizService.getQuizForLesson(lessonId);
         ApiResponseDTO<QuizResponseDTO> response = new ApiResponseDTO<>(
                 200, quiz, "Quiz with lesson : " + lessonId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/check-lesson/{lessonId}")
+    public ResponseEntity<Boolean> checkExistLesson(@PathVariable Long lessonId) {
+        Boolean response =  quizService.checkExistLesson(lessonId);
         return ResponseEntity.ok(response);
     }
 }

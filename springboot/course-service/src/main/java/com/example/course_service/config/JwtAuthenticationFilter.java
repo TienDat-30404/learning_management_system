@@ -36,7 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     .filter(role -> !role.isEmpty()) // Lọc bỏ chuỗi rỗng nếu có
                                     .map(SimpleGrantedAuthority::new)
                                     .collect(Collectors.toList());
-                System.out.println("authoritiesssssssssssssssssss" + authorities);
             }
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

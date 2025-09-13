@@ -18,14 +18,18 @@ public class QuizAttemptMapper {
         QuizAttemptResponseDTO dto = new QuizAttemptResponseDTO();
         dto.setId(quizAttempt.getId());
         dto.setScore(quizAttempt.getScore());
+        dto.setDuration(quizAttempt.getDuration());
+        dto.setCreatedAt(quizAttempt.getCreatedAt());
         QuizResponseDTO quiz = quizMapper.toDTO(quizAttempt.getQuiz());
         dto.setQuiz(quiz);
         return dto;
+        
     }
 
     public QuizAttempt toEntity(QuizAttemptRequestDTO request) {
         QuizAttempt quizAttempt = new QuizAttempt();
         quizAttempt.setScore(request.getScore());
+        quizAttempt.setDuration(request.getDuration());
         return quizAttempt;
     }
 }

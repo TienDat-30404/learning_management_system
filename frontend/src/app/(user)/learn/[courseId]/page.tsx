@@ -3,69 +3,59 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Play,
-  Pause,
   BookOpen,
-  Users,
-  Clock,
-  Star,
-  Award,
-  Heart,
-  Share2,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
   CheckCircle,
-  Circle,
-  User,
-  Calendar,
-  MessageSquare,
-  ThumbsUp,
-  Volume2,
-  VolumeX,
   Settings,
-  Maximize,
-  SkipBack,
-  SkipForward,
-  RotateCcw,
-  Download,
-  FileText,
   Menu,
   X,
-  ChevronLeft
 } from 'lucide-react';
 import { useGetAllLessons } from '@/hooks/useLessons';
 import { useParams, useSearchParams } from 'next/navigation';
 import { Lesson } from '@/types/lesson';
-import { useGetTotalLessonCompleted } from '@/hooks/useLessonProgress';
+import { useCompletedLesson, useGetTotalLessonCompleted } from '@/hooks/useLessonProgress';
+import { useCheckExistLessonQuiz } from '@/hooks/useQuizs';
+import { useRouter } from 'next/navigation';
 
 const CourseLearningInterface = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [completedLessons, setCompletedLessons] = useState(new Set([1, 2]));
-
-
-
+  const router = useRouter()
   const { courseId } = useParams()
   const { data: lessons, isLoading, error } = useGetAllLessons({
     courseId: courseId
   })
-  console.log("lessssonn", lessons)
 
-  const {data : totalLessonCompeleted} = useGetTotalLessonCompleted({
-    courseId : courseId
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentLesson, setCurrentLesson] = useState<Lesson>(lessons?.data?.content[0]);
+
+
+  const { data: totalLessonCompeleted } = useGetTotalLessonCompleted({
+    courseId: courseId
   })
 
-  const [currentLesson, setCurrentLesson] = useState<Lesson>(lessons?.data?.content[0]);
 
   const selectLesson = (lesson: Lesson) => {
     setCurrentLesson(lesson);
     setIsPlaying(false);
   };
 
+  const { data: hasQuiz, isError } = useCheckExistLessonQuiz(currentLesson?.id);
+  const {mutate : markLessonCompleted} = useCompletedLesson();
+  const handleCompleteLesson = () => {
+    if(hasQuiz) {
+      router.push(`/quiz/${currentLesson?.id}`)
+    }
+    else {
+      markLessonCompleted({
+        lessonId : currentLesson?.id,
+        courseId : Number(courseId)
+      })
+    }
+  }
 
-  const videoRef = useRef<HTMLVideoElement>(null);
+  
 
-  const [isPlaying, setIsPlaying] = useState(false);
- 
+  console.log("hasssQUixzzz", hasQuiz)
   return (
     <div className="min-h-screen bg-gray-900 text-white">
 
@@ -155,7 +145,7 @@ const CourseLearningInterface = () => {
                 <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
                   <div className="text-center">
                     <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Play 
+                      <Play
                         onClick={() => setIsPlaying(true)}
                         className="w-12 h-12 text-white ml-1" />
                     </div>
@@ -179,101 +169,27 @@ const CourseLearningInterface = () => {
 
                 <div className="flex items-center space-x-4">
                   <button
-                    // onClick={markComplete}
-                    // disabled={completedLessons.has(currentLesson)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors 
-                      ${isPlaying
+                    onClick={() => handleCompleteLesson()}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer
+                      ${currentLesson?.isCompleted
                         // completedLessons.has(currentLesson)
-                      ? 'bg-green-600 text-white cursor-not-allowed'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        ? 'bg-green-600 text-white cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
                       }`}
                   >
                     {currentLesson?.isCompleted
-                     ? (
-                      <>
-                        <CheckCircle className="w-4 h-4 mr-2 inline" />
-                        Đã hoàn thành
-                      </>
-                    ) : (
-                      'Đánh dấu hoàn thành'
-                    )}
+                      ? (
+                        <>
+                          <CheckCircle className="w-4 h-4 mr-2 inline" />
+                          Đã hoàn thành
+                        </>
+                      ) : (
+                        hasQuiz ? 'Hoàn thành bài học với quiz' : 'Đánh dấu hoàn thành bài học'
+                      )}
                   </button>
-                  {/* <button
-                    onClick={() => setShowNotes(!showNotes)}
-                    className="px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors"
-                  >
-                    <FileText className="w-4 h-4 mr-2 inline" />
-                    Ghi chú
-                  </button>
-                  <button
-                    onClick={() => setShowTranscript(!showTranscript)}
-                    className="px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors"
-                  >
-                    <MessageSquare className="w-4 h-4 mr-2 inline" />
-                    Phụ đề
-                  </button> */}
                 </div>
               </div>
 
-              {/* Notes Section */}
-              {/* {showNotes && (
-                <div className="mb-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
-                  <h3 className="text-lg font-semibold text-white mb-3">Ghi chú của bạn</h3>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Viết ghi chú cho bài học này..."
-                    className="w-full h-32 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-                  />
-                  <div className="flex justify-end mt-3">
-                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-                      Lưu ghi chú
-                    </button>
-                  </div>
-                </div>
-              )} */}
-
-              {/* Transcript Section */}
-              {/* {showTranscript && (
-                <div className="mb-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
-                  <h3 className="text-lg font-semibold text-white mb-3">Phụ đề bài học</h3>
-                  <div className="space-y-3 text-gray-300">
-                    <div className="p-3 bg-gray-700 rounded">
-                      <span className="text-blue-400 text-sm">00:00</span>
-                      <p className="mt-1">Xin chào các bạn, trong bài học hôm nay chúng ta sẽ học cách tạo một project React đầu tiên...</p>
-                    </div>
-                    <div className="p-3 bg-gray-700 rounded">
-                      <span className="text-blue-400 text-sm">00:30</span>
-                      <p className="mt-1">Đầu tiên, chúng ta cần cài đặt Node.js và npm trên máy tính của mình...</p>
-                    </div>
-                    <div className="p-3 bg-gray-700 rounded">
-                      <span className="text-blue-400 text-sm">01:15</span>
-                      <p className="mt-1">Sau khi cài đặt xong, chúng ta sẽ sử dụng Create React App để tạo project...</p>
-                    </div>
-                  </div>
-                </div>
-              )} */}
-
-              {/* Resources */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white mb-3">Tài liệu bài học</h3>
-                {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {courseData.currentLessonData.resources.map((resource, index) => (
-                    <div key={index} className="p-4 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-750 transition-colors">
-                      <div className="flex items-center justify-between mb-2">
-                        <FileText className="w-5 h-5 text-blue-400" />
-                        <span className="text-sm text-gray-400">{resource.size}</span>
-                      </div>
-                      <h4 className="text-white font-medium mb-1">{resource.name}</h4>
-                      <p className="text-sm text-gray-400 mb-3">{resource.type.toUpperCase()}</p>
-                      <button className="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
-                        <Download className="w-4 h-4 mr-1" />
-                        Tải xuống
-                      </button>
-                    </div>
-                  ))}
-                </div> */}
-              </div>
             </div>
           </div>
         </div>
