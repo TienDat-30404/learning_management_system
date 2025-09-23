@@ -1,22 +1,16 @@
 package com.example.enrollment_service.service.enrollment;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.enrollment_service.client.CourseClient;
-import com.example.enrollment_service.dto.ApiResponseDTO;
 import com.example.enrollment_service.dto.CustomPageDTO;
-import com.example.enrollment_service.dto.course.CourseResponseDTO;
 import com.example.enrollment_service.dto.enrollment.EnrollmentRequestDTO;
 import com.example.enrollment_service.dto.enrollment.EnrollmentResponseDTO;
-import com.example.enrollment_service.dto.enrollment.EnrollmentUpdateDTO;
 import com.example.enrollment_service.mappper.EnrollmentMapper;
 import com.example.enrollment_service.model.Enrollment;
 import com.example.enrollment_service.repository.EnrollmentRepository;
@@ -99,6 +93,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 enrollmentRepository.save(enrollment);
             }
         }
+    }
+
+    
+    public List<Long> countStudentsByCourseId(List<Long> courseIds) {
+        List<Long> response = enrollmentRepository.countStudentsGroupedByCourseId(courseIds);
+        return response;
     }
 
 }

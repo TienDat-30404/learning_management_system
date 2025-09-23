@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.course_service.client.UserClient;
 import com.example.course_service.dto.CustomPageDTO;
+import com.example.course_service.dto.category.CategoryResponseDTO;
 import com.example.course_service.dto.course.CourseResponseDTO;
 import com.example.course_service.dto.course.CourseResquestDTO;
 import com.example.course_service.dto.course.CourseUpdatetDTO;
@@ -23,6 +24,7 @@ import com.example.course_service.model.Category;
 
 import com.example.course_service.repository.CategoryRepository;
 import com.example.course_service.repository.CourseRepository;
+import com.example.course_service.repository.LessonRepository;
 import com.example.course_service.service.CloudinaryService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -38,6 +40,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
     private final CloudinaryService cloudinaryService;
     private final CategoryRepository categoryRepository;
+    private final LessonRepository lessonRepository;
 
     // @CacheEvict(value = "courses", allEntries = true)
     public CourseResponseDTO createCourse(CourseResquestDTO courseResquestDTO) {
@@ -134,5 +137,29 @@ public class CourseServiceImpl implements CourseService {
     public boolean existsById(Long id) {
         return courseRepository.existsById(id);
     }
+
+    public CustomPageDTO<CourseResponseDTO> findCoursesForUser(Long userId, Pageable pageable) {
+        try {
+
+            Page<Course> coursesPage = courseRepository.findByUserId(userId, pageable);
+            List<CourseResponseDTO> courses = coursesPage.getContent().stream().map(
+                    course -> {
+                        CourseResponseDTO dto = courseMapper.toDTO(course);
+                        Long quantityLesson = lessonRepository.countByCourse_Id(course.getId());
+                        dto.setTotalLesson(quantityLesson);
+                        return dto;
+                    }).toList();
+
+            return new CustomPageDTO<>(
+                    courses,
+                    coursesPage.getTotalElements(),
+                    coursesPage.getTotalPages());
+        } catch (Exception e) {
+            log.error("Error fetchin couses: {}", e.getMessage(), e);
+            return new CustomPageDTO<>(List.of(), 0L, 0);
+        }
+    }
+
+ 
 
 }

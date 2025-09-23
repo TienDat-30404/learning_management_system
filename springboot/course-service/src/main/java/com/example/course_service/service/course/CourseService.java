@@ -24,4 +24,6 @@ public interface CourseService {
 
     public List<CourseResponseDTO> getCourseByIds(List<Long> ids);
 
+    public CustomPageDTO<CourseResponseDTO> findCoursesForUser(Long userId, Pageable pageable);
+
 }

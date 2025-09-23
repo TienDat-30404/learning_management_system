@@ -1,5 +1,7 @@
 package com.example.quiz_service.service.quiz;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 
 import com.example.quiz_service.dto.CustomPageDTO;
@@ -10,4 +12,5 @@ public interface QuizService {
     public QuizResponseDTO createQuiz(QuizRequestDTO request);
     public QuizResponseDTO getQuizForLesson(Long lessonId);
     public boolean checkExistLesson(Long lessonId);
+    public long countNumberOfQuizs(List<Long> lessonIds); 
 }

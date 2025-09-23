@@ -1,5 +1,7 @@
 package com.example.enrollment_service.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -55,5 +57,15 @@ public class EnrollmentController {
 
     // return ResponseEntity.ok(response);
     // }
+
+
+    @GetMapping("/get-student-counts")
+    public ResponseEntity<ApiResponseDTO<List<Long>>> getStudentCounts(@RequestParam("ids") List<Long> courseId) {
+        List<Long> countStudents = enrollmentService.countStudentsByCourseId(courseId);
+        ApiResponseDTO<List<Long>> response = new ApiResponseDTO<>(
+            200, countStudents, "Get the number of students corresponding to each course"
+        );
+        return ResponseEntity.ok(response);
+    } 
 
 }

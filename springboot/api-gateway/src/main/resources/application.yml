@@ -69,6 +69,11 @@ spring:
           uri : lb://discount-service
           predicates:
             - Path=/api/v1/discounts/**
+        
+        - id: aggregation-service
+          uri : lb://aggregation-service
+          predicates:
+            - Path=/api/v1/aggregated/courses/**, /api/v1/aggregated/enrollments/**, /api/v1/aggregated/lesson_progress/**, /api/v1/aggregated/teacher/**
 
       globalcors:
         corsConfigurations:
@@ -109,9 +114,5 @@ gateway:
       GET /api/v1/users/by-ids,
       GET /api/v1/categories,
       GET /api/v1/courses,
-      GET /api/v1/courses/*,
       GET /api/v1/paymentMethods,
       GET /api/v1/users/*/exists,
-      GET /api/v1/gateway/courses,
-      GET /api/v1/gateway/courses/*
-      GET /api/v1/gateway/lesson_progress/*

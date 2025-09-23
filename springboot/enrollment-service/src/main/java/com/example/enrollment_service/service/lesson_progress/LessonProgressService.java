@@ -14,4 +14,5 @@ public interface LessonProgressService {
 
     public List<LessonProgressResponseDTO> getLessonsCompleted(List<Long> lessonIds, Long userId);
 
+
 }

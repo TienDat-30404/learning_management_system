@@ -21,6 +21,7 @@
         <module>enrollment-service</module>
         <module>quiz-service</module>
         <module>discount-service</module>
+        <module>aggregation-service</module>
         <module>event-commons</module>
 
     </modules>

@@ -3,5 +3,5 @@ import apiClient from "../api";
 
 
 export function getAllLesson(params : QueryParams = {}) {
-    return apiClient.get('/gateway/lesson_progress', {params})
+    return apiClient.get('/aggregated/lesson_progress', {params})
 }

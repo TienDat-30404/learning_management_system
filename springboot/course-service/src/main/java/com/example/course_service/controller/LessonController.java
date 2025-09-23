@@ -1,5 +1,6 @@
 package com.example.course_service.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import com.example.course_service.dto.CustomPageDTO;
 import com.example.course_service.dto.lesson.LessonRequestDTO;
 import com.example.course_service.dto.lesson.LessonResponseDTO;
 import com.example.course_service.dto.lesson.LessonUpdateDTO;
+import com.example.course_service.model.Lesson;
 import com.example.course_service.service.lesson.LessonService;
 
 import jakarta.validation.Valid;
@@ -112,6 +114,16 @@ public class LessonController {
         public Long findCourseIdBylessonId(
                         @RequestParam("lessonId") Long lessonId) {
                 return lessonService.getCourseIdBasedOnLessonId(lessonId);
+        }
+
+
+        
+        @GetMapping("/ids-by-courses")
+        public ResponseEntity<ApiResponseDTO<List<Long>>> getLessonIdsForCourses(@RequestParam("ids") List<Long> ids) {
+                List<Long> vv = lessonService.getLessonIdsByCourseIds(ids);
+                ApiResponseDTO<List<Long>> nn = new ApiResponseDTO<>(
+                                200, vv, "gjwtwer");
+                return ResponseEntity.ok(nn);
         }
 
 }

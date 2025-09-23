@@ -18,34 +18,31 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
 
-                                        .requestMatchers(HttpMethod.GET, "/api/v1/lessons?courseId=40").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/lessons?courseId=40").permitAll()
 
-                    .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")
-                    .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasAnyAuthority("Admin", "Manager")
 
-            
-                    .requestMatchers(HttpMethod.GET, "/api/v1/courses/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/courses/**").hasAnyAuthority("Admin", "Manager")
-                    .requestMatchers(HttpMethod.PUT, "/api/v1/courses/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.GET, "api/v1/courses/courses-by-user").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/courses/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/courses/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/courses/**").hasAnyAuthority("Admin", "Manager")
 
-                    .requestMatchers(HttpMethod.GET, "/api/v1/lessons/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/lessons/**").hasAnyAuthority("Admin", "Manager")
-                    .requestMatchers(HttpMethod.PATCH, "/api/v1/lessons/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/lessons/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/lessons/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/lessons/**").hasAnyAuthority("Admin", "Manager")
 
-                    
-                    .requestMatchers("/error").permitAll()
-                    .anyRequest().authenticated())
+                        .requestMatchers("/error").permitAll()
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

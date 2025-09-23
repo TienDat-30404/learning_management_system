@@ -1,5 +1,7 @@
 package com.example.quiz_service.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +45,17 @@ public class QuizController {
 
     @GetMapping("/check-lesson/{lessonId}")
     public ResponseEntity<Boolean> checkExistLesson(@PathVariable Long lessonId) {
-        Boolean response =  quizService.checkExistLesson(lessonId);
+        Boolean response = quizService.checkExistLesson(lessonId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/total-quiz-of-courses")
+    public ResponseEntity<ApiResponseDTO<Long>> getCountQuizForCourses(
+            @RequestParam("lessonId") List<Long> lessonIds) {
+
+        long count = quizService.countNumberOfQuizs(lessonIds);
+        ApiResponseDTO<Long> response = new ApiResponseDTO<>(
+                200, count, "Total quiz of courses" + count);
         return ResponseEntity.ok(response);
     }
 }

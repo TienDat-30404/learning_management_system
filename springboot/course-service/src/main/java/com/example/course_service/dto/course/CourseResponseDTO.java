@@ -20,4 +20,6 @@ public class CourseResponseDTO {
     private CategoryResponseDTO category;
     private String learningOutcomes;
     private BigDecimal price;
+
+    private Long totalLesson;
 }

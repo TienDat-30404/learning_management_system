@@ -57,13 +57,7 @@ const GetStartedSection: React.FC = () => {
     }
 
 
-     const g = async() => {
-        const vvv = await fetch('http://localhost:8080/api/v1/gateway/courses?page=0&size=2')
-        console.log("vvv", vvv)
-    }
-
-    console.log("ịi23rji3nr23")
-    g()
+   
 
 
     return (

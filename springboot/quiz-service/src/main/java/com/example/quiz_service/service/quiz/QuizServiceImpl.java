@@ -90,7 +90,7 @@ public class QuizServiceImpl implements QuizService {
         if (!existLesson) {
             throw new EntityNotFoundException("Not found quiz for lesson = " + lessonId);
         }
-        
+
         Quiz quiz = quizRepository.findByLessonId(lessonId);
         QuizResponseDTO response = quizMapper.toDTO(quiz);
         List<QuizResponseDTO.QuestionDTO> questionDTOList = new ArrayList<>();
@@ -123,6 +123,11 @@ public class QuizServiceImpl implements QuizService {
 
     public boolean checkExistLesson(Long lessonId) {
         return quizRepository.existsByLessonId(lessonId);
+    }
+
+    public long countNumberOfQuizs(List<Long> lessonIds) {
+        long number = quizRepository.countByLessonIdIn(lessonIds);
+        return number;
     }
 
 }

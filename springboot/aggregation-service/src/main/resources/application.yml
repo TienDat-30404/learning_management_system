@@ -1,0 +1,12 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: aggregation-service
+
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+
