@@ -121,8 +121,7 @@ public class EnrollmentAggregationService {
                                                                 enrollments,
                                                                 enrollmentPage.getTotalElements(),
                                                                 enrollmentPage.getTotalPages(),
-                                                                null
-                                                                );
+                                                                null);
                                         });
                 });
         }

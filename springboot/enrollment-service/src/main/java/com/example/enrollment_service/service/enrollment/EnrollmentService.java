@@ -20,4 +20,6 @@ public interface EnrollmentService {
 
     public List<Long> countStudentsByCourseId(List<Long> courseIds);
 
+    public CustomPageDTO<EnrollmentResponseDTO> getEnrollments(List<Long> courseIds, Long userId, Pageable pageable);
+
 }

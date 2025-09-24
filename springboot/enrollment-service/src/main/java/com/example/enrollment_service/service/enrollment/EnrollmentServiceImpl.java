@@ -28,7 +28,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentMapper enrollmentMapper;
     private final CourseClient courseClient;
 
-
     public CustomPageDTO<EnrollmentResponseDTO> getCourseProgressOfUser(Long userId, Pageable pageable) {
         try {
 
@@ -43,30 +42,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             return new CustomPageDTO<>(List.of(), 0L, 0);
         }
     }
-
-    // public CustomPageDTO<EnrollmentResponseDTO> getAllEnrollmentByUser(Long userId, Pageable pageable) {
-    //     try {
-    //         Page<Enrollment> enrollmentPage = enrollmentRepository.findByUserId(userId, pageable);
-    //         List<Enrollment> enrollments = enrollmentPage.getContent();
-    //         List<Long> courseIds = enrollments.stream().map(Enrollment::getCourseId)
-    //                 .filter(Objects::nonNull)
-    //                 .collect(Collectors.toList());
-    //         Map<Long, CourseResponseDTO> courseMap = fetchCourses(courseIds);
-    //         List<EnrollmentResponseDTO> listEnrollments = enrollments.stream().map(enrollment -> {
-    //             EnrollmentResponseDTO dto = enrollmentMapper.toDTO(enrollment);
-    //             CourseResponseDTO course = courseMap.get(enrollment.getCourseId());
-    //             if (course != null) {
-    //                 dto.setCourse(course);
-    //             }
-    //             return dto;
-    //         }).collect(Collectors.toList());
-    //         return new CustomPageDTO<>(
-    //                 listEnrollments, enrollmentPage.getTotalElements(), enrollmentPage.getTotalPages());
-    //     } catch (Exception e) {
-    //         log.error("Error fetchin couses: {}", e.getMessage(), e);
-    //         return new CustomPageDTO<>(List.of(), 0L, 0);
-    //     }
-    // }
 
     public void addEnrollment(EnrollmentRequestDTO request) {
         request.setProgress(Double.valueOf(0));
@@ -95,10 +70,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
     }
 
-    
     public List<Long> countStudentsByCourseId(List<Long> courseIds) {
         List<Long> response = enrollmentRepository.countStudentsGroupedByCourseId(courseIds);
         return response;
+    }
+
+    public CustomPageDTO<EnrollmentResponseDTO> getEnrollments(List<Long> courseIds, Long userId, Pageable pageable) {
+        try {
+            Page<Enrollment> enrollmentPage;
+            if (userId == null) {
+                System.out.println("idddd = nulllllllllllllllllllllllllllllll");
+                enrollmentPage = enrollmentRepository.findStudentsByCourses(courseIds, pageable);
+            } else {
+                System.out.println("idddd = notttttttttttttttttttttttttttttttt nulllllllllllllllllllllllllllllll");
+
+                enrollmentPage = enrollmentRepository.findStudentsByCoursesAndUserId(courseIds, userId, pageable);
+            }
+            Page<EnrollmentResponseDTO> enrollments = enrollmentPage.map(enrollmentMapper::toDTO);
+            return new CustomPageDTO<>(
+                    enrollments.getContent(), enrollmentPage.getTotalElements(), enrollmentPage.getTotalPages());
+        } catch (Exception e) {
+            log.error("Error fetchin couses: {}", e.getMessage(), e);
+            return new CustomPageDTO<>(List.of(), 0L, 0);
+        }
     }
 
 }

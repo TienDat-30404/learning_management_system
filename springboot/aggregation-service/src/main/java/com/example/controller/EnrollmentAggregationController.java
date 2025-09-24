@@ -16,7 +16,7 @@ import com.example.service.EnrollmentAggregationService;
 @RestController
 @RequestMapping("/api/v1/aggregated/enrollments")
 @RequiredArgsConstructor
-public class EnrollmentGatewayController {
+public class EnrollmentAggregationController {
 
     private final EnrollmentAggregationService service;
 

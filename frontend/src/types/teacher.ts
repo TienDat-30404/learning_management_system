@@ -10,3 +10,4 @@ export interface DashboardTeacher {
     category : Category
     totalQuizs : number
 }
+

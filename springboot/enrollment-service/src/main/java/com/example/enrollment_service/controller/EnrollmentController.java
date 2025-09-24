@@ -40,32 +40,27 @@ public class EnrollmentController {
         return ResponseEntity.ok(response);
     }
 
-    // @GetMapping("/by-user")
-    // public ResponseEntity<ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>>>
-    // getAllEnrollmentByUser(
-    // @RequestParam(value = "page", defaultValue = "0") int page,
-    // @RequestParam(value = "size", defaultValue = "10") int size
-    // ) {
-    // Long userId = authenticatedUser.getUserId();
-    // Pageable pageable = PageRequest.of(page, size);
-    // CustomPageDTO<EnrollmentResponseDTO> enrollments =
-    // enrollmentService.getAllEnrollmentByUser(userId, pageable);
-    // ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>> response = new
-    // ApiResponseDTO<>(
-    // 200, enrollments, "Get list course of user when enrollment"
-    // );
+    @GetMapping("/all-student-by-courses")
+    public ResponseEntity<ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>>> getAllStudentForCoursess(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam("courseId") List<Long> courseIds,
+            @RequestParam(required = false) Long userId
+            ) {
+        Pageable pageable = PageRequest.of(page, size);
+        CustomPageDTO<EnrollmentResponseDTO> enrollments = enrollmentService.getEnrollments(courseIds, userId, pageable);
+        ApiResponseDTO<CustomPageDTO<EnrollmentResponseDTO>> response = new ApiResponseDTO<>(
+                200, enrollments, "List enrollment by courses of teacher successful");
 
-    // return ResponseEntity.ok(response);
-    // }
-
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/get-student-counts")
     public ResponseEntity<ApiResponseDTO<List<Long>>> getStudentCounts(@RequestParam("ids") List<Long> courseId) {
         List<Long> countStudents = enrollmentService.countStudentsByCourseId(courseId);
         ApiResponseDTO<List<Long>> response = new ApiResponseDTO<>(
-            200, countStudents, "Get the number of students corresponding to each course"
-        );
+                200, countStudents, "Get the number of students corresponding to each course");
         return ResponseEntity.ok(response);
-    } 
+    }
 
 }

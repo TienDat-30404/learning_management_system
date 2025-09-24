@@ -16,8 +16,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.dto.ApiResponseDTO;
+import com.example.dto.CourseDTO;
 import com.example.dto.CustomPageDTO;
+import com.example.dto.UserDTO;
+import com.example.dto.aggregation.EnrollmentAggregationDTO;
 import com.example.dto.aggregation.teacher.DashboardAggregationDTO;
+import com.example.dto.aggregation.teacher.StudentAggregationDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +35,13 @@ public class TeacherAggregationService {
 
                 // 1. Gọi API courses để lấy danh sách khóa học và thông tin cơ bản
                 Mono<ApiResponseDTO<CustomPageDTO<DashboardAggregationDTO>>> coursesMono = client.get()
-                                .uri("lb://course-service/api/v1/courses/courses-by-user")
+                                .uri(uriBuilder -> uriBuilder
+                                                .scheme("http")
+                                                .host("course-service")
+                                                .path("/api/v1/courses/courses-by-user")
+                                                .queryParam("page", page)
+                                                .queryParam("size", size)
+                                                .build())
                                 .header("Authorization", token)
                                 .header("X-User-Roles", userRoles)
                                 .header("X-User-ID", userId)
@@ -80,7 +90,7 @@ public class TeacherAggregationService {
                                                                 .scheme("http")
                                                                 .host("quiz-service")
                                                                 .path("/api/v1/quizs/total-quiz-of-courses")
-                                                                .queryParam("lessonId", lessonIds.toArray()) 
+                                                                .queryParam("lessonId", lessonIds.toArray())
                                                                 .build()
                                                                 .toUri())
                                                 .header("Authorization", token)
@@ -150,6 +160,143 @@ public class TeacherAggregationService {
                                                                 coursesPage.getTotalPages(),
                                                                 totalQuizzes);
                                         });
+                });
+        }
+
+        public Mono<CustomPageDTO<StudentAggregationDTO>> getAllStudentOfTeacher(int page, int size, String token,
+                        String userId, String userRoles, Long studentId) {
+                WebClient client = webClientBuilder.build();
+
+                // 1. Gọi API courses để lấy danh sách khóa học và thông tin cơ bản
+                Mono<ApiResponseDTO<CustomPageDTO<DashboardAggregationDTO>>> coursesMonoByTeacher = client.get()
+                                .uri(uriBuilder -> uriBuilder
+                                                .scheme("http")
+                                                .host("course-service")
+                                                .path("/api/v1/courses/courses-by-user")
+                                                .build())
+                                .header("Authorization", token)
+                                .header("X-User-Roles", userRoles)
+                                .header("X-User-ID", userId)
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ApiResponseDTO<CustomPageDTO<DashboardAggregationDTO>>>() {
+                                });
+
+                // Sử dụng flatMap để xử lý kết quả từ Mono đầu tiên
+                return coursesMonoByTeacher.flatMap(coursesResponse -> {
+                        CustomPageDTO<DashboardAggregationDTO> coursesPage = coursesResponse.getData();
+                        List<DashboardAggregationDTO> coursesByTeacher = coursesPage.getContent();
+
+                        List<Long> courseIds = coursesByTeacher.stream()
+                                        .map(DashboardAggregationDTO::getId)
+                                        .distinct()
+                                        .toList();
+
+                        if (courseIds.isEmpty()) {
+                                return Mono.just(new CustomPageDTO<>(new ArrayList<>(), 0L, 0, null));
+                        }
+
+                        Mono<ApiResponseDTO<CustomPageDTO<StudentAggregationDTO>>> enrollmentsMono = client.get()
+                                        .uri(UriComponentsBuilder.newInstance()
+                                                        .scheme("http")
+                                                        .host("enrollment-service")
+                                                        .path("/api/v1/enrollments/all-student-by-courses")
+                                                        .queryParam("courseId", courseIds.toArray())
+                                                        .queryParam("page", page)
+                                                        .queryParam("size", size)
+                                                        .queryParam("userId", studentId)
+                                                        .build()
+                                                        .toUri())
+                                        .header("Authorization", token)
+                                        .header("X-User-Roles", userRoles)
+                                        .header("X-User-ID", userId)
+                                        .retrieve()
+                                        .bodyToMono(new ParameterizedTypeReference<ApiResponseDTO<CustomPageDTO<StudentAggregationDTO>>>() {
+                                        });
+
+                        return enrollmentsMono.flatMap(enrollmentResponse -> {
+                                CustomPageDTO<StudentAggregationDTO> enrollmentPage = enrollmentResponse.getData();
+                                List<StudentAggregationDTO> enrollments = enrollmentPage.getContent();
+
+                                List<Long> userIds = enrollments.stream()
+                                                .map(StudentAggregationDTO::getUserId)
+                                                .distinct()
+                                                .toList();
+
+                                if (userIds.isEmpty()) {
+                                        return Mono.just(new CustomPageDTO<>(new ArrayList<>(), 0L, 0, null));
+                                }
+
+                                List<Long> courseIdsOfEnrollment = enrollments.stream()
+                                                .map(StudentAggregationDTO::getCourseId)
+                                                .distinct()
+                                                .toList();
+
+                                Mono<ApiResponseDTO<List<UserDTO>>> usersMono = client.get()
+                                                .uri(uriBuilder -> {
+                                                        var builder = uriBuilder
+                                                                        .scheme("http")
+                                                                        .host("user-service")
+                                                                        .path("/api/v1/users/by-ids");
+                                                        for (Long id : userIds) {
+                                                                builder.queryParam("ids", id);
+                                                        }
+                                                        return builder.build();
+                                                })
+                                                .retrieve()
+                                                .bodyToMono(new ParameterizedTypeReference<ApiResponseDTO<List<UserDTO>>>() {
+                                                });
+
+                                Mono<ApiResponseDTO<List<CourseDTO>>> coursesMono = client.get()
+                                                .uri(uriBuilder -> {
+                                                        var builder = uriBuilder
+                                                                        .scheme("http")
+                                                                        .host("course-service")
+                                                                        .path("/api/v1/courses/by-ids");
+                                                        for (Long id : courseIds) {
+                                                                builder.queryParam("ids", id);
+                                                        }
+                                                        return builder.build();
+                                                })
+                                                .retrieve()
+                                                .bodyToMono(new ParameterizedTypeReference<ApiResponseDTO<List<CourseDTO>>>() {
+                                                });
+
+                                return Mono.zip(coursesMono, usersMono)
+                                                .map(tuple -> {
+                                                        List<CourseDTO> courses = tuple.getT1().getData();
+                                                        List<UserDTO> users = tuple.getT2().getData();
+
+                                                        Map<Long, CourseDTO> courseMap = courses.stream()
+                                                                        .collect(Collectors.toMap(CourseDTO::getId,
+                                                                                        course -> course));
+
+                                                        Map<Long, UserDTO> userMap = users.stream()
+                                                                        .collect(Collectors.toMap(UserDTO::getId,
+                                                                                        user -> user));
+                                                        enrollments.forEach(enrollment -> {
+                                                                CourseDTO course = courseMap
+                                                                                .get(enrollment.getCourseId());
+                                                                if (course != null) {
+                                                                        enrollment.setCourse(course);
+                                                                }
+
+                                                                UserDTO user = userMap.get(enrollment.getUserId());
+                                                                if (user != null) {
+                                                                        enrollment.setUser(user);
+                                                                }
+                                                        });
+
+                                                        // Trả về enrollments kèm course và user
+                                                        return new CustomPageDTO<>(
+                                                                        enrollments,
+                                                                        enrollmentPage.getTotalElements(),
+                                                                        enrollmentPage.getTotalPages(),
+                                                                        null);
+                                                });
+
+                        });
+
+                        // 3. Kết hợp các kết quả từ các Mono
                 });
         }
 }
