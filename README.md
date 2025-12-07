@@ -20,29 +20,17 @@ Dự án được phát triển sử dụng bộ công nghệ hiện đại, t�
 | Dịch vụ | Chức năng |
 | :--- | :--- |
 | **api-gateway** | Định tuyến yêu cầu, bảo mật, và cân bằng tải (Load Balancing) đến các dịch vụ Microservices. |
-
 | **discovery-eureka** | Máy chủ Đăng ký và Phát hiện Dịch vụ (Service Discovery) để các dịch vụ có thể tìm thấy nhau. |
-
 | **config-server** | Quản lý cấu hình tập trung cho tất cả các Microservices. |
-
 | **user-service** | Quản lý thông tin người dùng (Đăng ký, Đăng nhập, Hồ sơ, Xác thực vai trò Giảng viên/Học viên). |
-
 | **course-service** | Quản lý thông tin khóa học, nội dung bài học, và tài liệu học tập. |
-
 | **discount-service** | Quản lý các chương trình giảm giá, mã khuyến mãi và áp dụng chiết khấu. |
-
 | **payment-service** | Xử lý giao dịch thanh toán, tích hợp các cổng thanh toán **VNPAY**, MoMo, ZaloPay. |
-
 | **enrollment-service** | Quản lý việc ghi danh học viên vào khóa học và theo dõi tiến độ. |
-
 | **quiz-service** | Xây dựng, quản lý và xử lý các bài kiểm tra, câu hỏi và lưu trữ kết quả. |
-
 | **review-service** | Quản lý đánh giá và xếp hạng (rating) của học viên dành cho khóa học. |
-
 | **notification-service** | Gửi thông báo (email, tin nhắn) và xử lý sự kiện bất đồng bộ qua **Kafka**. |
-
 | **aggregation-service** | Tập hợp dữ liệu từ nhiều dịch vụ khác nhau và sử dụng **Redis** để lưu cache nhằm tối ưu hiệu suất. |
-
 | **common-lib** | Thư viện chung chứa các lớp, tiện ích, hằng số, và cấu hình được chia sẻ giữa các Microservices. |
 
 
