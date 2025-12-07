@@ -116,3 +116,4 @@ gateway:
       GET /api/v1/courses,
       GET /api/v1/paymentMethods,
       GET /api/v1/users/*/exists,
+      GET /api/v1/aggregated/courses/**

@@ -34,11 +34,11 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "api/v1/courses/courses-by-user").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/courses/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/courses/**").hasAnyAuthority("Admin", "Manager")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/courses/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/courses/**").hasAnyAuthority("Admin", "Manager", "Teacher")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/courses/**").hasAnyAuthority("Admin", "Manager", "Teacher")
 
                         .requestMatchers(HttpMethod.GET, "/api/v1/lessons/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/lessons/**").hasAnyAuthority("Admin", "Manager")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/lessons/**").hasAnyAuthority("Admin", "Manager", "Teacher")
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/lessons/**").hasAnyAuthority("Admin", "Manager")
 
                         .requestMatchers("/error").permitAll()

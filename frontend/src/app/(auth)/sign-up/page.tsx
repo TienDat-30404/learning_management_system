@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, User, Mail, Lock, BookOpen, ArrowRight, Globe, UserRound, Calendar } from 'lucide-react';
-import InputWithIcon from '@/components/form/InputWithIcon';
-import SelectWithIcon from '@/components/form/Select';
+import InputWithIcon from '@/components/ui/form/InputWithIcon';
+import SelectWithIcon from '@/components/ui/form/Select';
 
 import { RegisterFormData, ValidationErrorsRegister } from '@/types/auth';
 import { register } from '@/services/auth/auth';

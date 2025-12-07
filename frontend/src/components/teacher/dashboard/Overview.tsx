@@ -1,27 +1,42 @@
 import { useDashboardTeacher, useListStudentsOfTeacher } from "@/hooks/useTeacher";
 import { DashboardTeacher } from "@/types/teacher";
-import { Book, BookOpen, BookType, CheckCircle, Edit, Eye, Trash2, Users } from "lucide-react";
+import { Book, BookOpen, BookType, CheckCircle, CirclePlus, Edit, Eye, Trash2, Users } from "lucide-react";
 import { useState } from "react";
+import { CourseEditModal } from "./CourseEditModal";
+import { UpdateCourse } from "@/types/course";
+import { SourceTextModule } from "vm";
+import { LessonCreateModal } from "./LessonCreateModal";
 
-export default function DashboardContent() {
 
+export default function Overview() {
 
     const [page, setPage] = useState<number>(0);
     const [size, setSize] = useState<number>(4)
+    const params = { page: Number(page), size: Number(size) };
+
     const { data: datasDashboard } = useDashboardTeacher({
         page: Number(page),
         size: Number(size)
     })
 
-    const {data :gg} = useListStudentsOfTeacher({
-        page : Number(page),
-        size : Number(size)
-    })
-    console.log("gggg", gg)
 
-    console.log("jer23rwe", datasDashboard)
     const totalNumerStudent = datasDashboard?.data?.content?.reduce((sum: number, data: DashboardTeacher) => sum + data.quantityStudent, 0)
 
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalCreateLesson, setIsModalCreateLesson] = useState(false)
+    const [selectedCourse, setSelectedCourse] = useState<UpdateCourse | null>(null);
+    
+
+    const handleEditCourse = (course: UpdateCourse) => {
+        setSelectedCourse(course);
+        setIsModalOpen(true);
+    };
+
+     const handleOpenModalCreateLesson = (course: UpdateCourse) => {
+        setSelectedCourse(course);
+        setIsModalCreateLesson(true);
+    };
 
 
 
@@ -77,6 +92,24 @@ export default function DashboardContent() {
                     </div>
                 </div>
 
+                <CourseEditModal
+                    isOpen={isModalOpen}
+                    course={selectedCourse}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        setSelectedCourse(null);
+                    }}
+                    params={params}
+                />
+
+                <LessonCreateModal
+                    isOpen = {isModalCreateLesson}
+                    course = {selectedCourse}
+                    onClose={() => {
+                        setIsModalCreateLesson(false);
+                        setSelectedCourse(null);
+                    }}
+                />
 
             </div>
 
@@ -151,17 +184,37 @@ export default function DashboardContent() {
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex justify-end space-x-2">
                                             <button className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded hover:bg-gray-200 flex items-center space-x-1">
-                                                <Eye className="w-4 h-4" />
-                                                <span>Xem</span>
+                                                <CirclePlus className="w-4 h-4" />
+                                                <span
+                                                    onClick={() => {
+                                                        const courseToUpdate = {
+                                                            id: course?.id,
+                                                            title: String(course?.title),
+                                                            image: String(course?.image),
+                                                            description: course?.description, 
+                                                            idCategory: course?.category?.id, 
+                                                        };
+                                                        handleOpenModalCreateLesson(courseToUpdate);
+                                                    }}
+                                                >
+                                                    Tạo bài học</span>
                                             </button>
                                             <button className="bg-blue-100 text-blue-700 px-3 py-1.5 rounded hover:bg-blue-200 flex items-center space-x-1">
                                                 <Edit className="w-4 h-4" />
-                                                <span>Sửa</span>
+                                                <span
+                                                    onClick={() => {
+                                                        const courseToUpdate = {
+                                                            id: course?.id,
+                                                            title: String(course?.title),
+                                                            image: String(course?.image),
+                                                            description: course?.description, 
+                                                            idCategory: course?.category?.id, 
+                                                        };
+                                                        handleEditCourse(courseToUpdate);
+                                                    }}
+                                                >Sửa</span>
                                             </button>
-                                            <button className="bg-red-100 text-red-700 px-3 py-1.5 rounded hover:bg-red-200 flex items-center space-x-1">
-                                                <Trash2 className="w-4 h-4" />
-                                                <span>Xóa</span>
-                                            </button>
+                                            
                                         </div>
                                     </td>
                                 </tr>

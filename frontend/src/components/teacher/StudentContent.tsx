@@ -39,7 +39,7 @@ export default function StudentContent() {
                         className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
                         onChange={(e) => setUserId(Number(e.target.value))}
                     >
-                        <option value="null">Tất cả khóa học</option>
+                        <option value="null">Tất cả học viên</option>
                         {uniqueStudents?.map((student: Enrollment) => (
                             <option
                                 key={student?.user?.id}

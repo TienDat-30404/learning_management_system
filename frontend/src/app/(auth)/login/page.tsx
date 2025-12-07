@@ -12,7 +12,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 
-import InputWithIcon from '@/components/form/InputWithIcon';
+import InputWithIcon from '@/components/ui/form/InputWithIcon';
 import { LoginFormData, ValidationErrorsLogin } from '@/types/auth';
 import { login } from '@/services/auth/auth';
 import { useRouter } from 'next/navigation';

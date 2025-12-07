@@ -5,6 +5,8 @@ import { QueryParams } from "@/types/common";
 export function useGetAllCategories(params: QueryParams) {
   return useQuery({
     queryKey: ["categories", params],
-    queryFn: () => getAllCategory(params).then(res => res.data)
+    queryFn: () => getAllCategory(params).then(res => res.data),
+    refetchOnMount: false,
+
   });
 }

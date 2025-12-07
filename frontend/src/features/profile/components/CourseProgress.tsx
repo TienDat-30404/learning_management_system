@@ -1,3 +1,4 @@
+'use client'
 import { useGetCourseProgressOfUser } from "@/hooks/useEnrollments";
 import { Enrollment } from "@/types/enrollment";
 import { Award, Clock, PlayCircle } from "lucide-react";

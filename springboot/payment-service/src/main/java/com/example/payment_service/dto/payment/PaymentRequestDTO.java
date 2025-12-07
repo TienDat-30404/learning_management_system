@@ -22,3 +22,4 @@ public class PaymentRequestDTO {
 
     private Long discountId;
 }
+    

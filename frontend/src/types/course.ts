@@ -12,3 +12,14 @@ export interface Course {
     user : User,
     discount : Discount
 }
+
+
+
+export interface UpdateCourse {
+    id : number,
+    title : string,
+    image : string,
+    description : string,
+    idCategory : number
+}
+

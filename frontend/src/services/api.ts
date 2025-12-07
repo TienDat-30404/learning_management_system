@@ -2,13 +2,11 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
 });
 
 apiClient.interceptors.request.use(config => {
+  
   const token = localStorage.getItem('accessToken');
   console.log("token" + token)
   if (token && config.headers) {

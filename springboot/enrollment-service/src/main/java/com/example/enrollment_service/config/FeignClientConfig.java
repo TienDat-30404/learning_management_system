@@ -14,7 +14,6 @@ public class FeignClientConfig {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        System.out.println("apiKEYINTERNALAAAAAAAAAAAAAAAAAAA" + apiKeyInternal);
         return requestTemplate -> {
             requestTemplate.header("API_KEY_INTERNAL", apiKeyInternal);
         };

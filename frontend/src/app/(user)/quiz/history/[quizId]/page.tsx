@@ -258,7 +258,7 @@ const QuizHistoryInterface: React.FC = () => {
         </div>
 
         {/* Main heading */}
-        <h3 className="text-3xl font-bold text-gray-800 mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        <h3 className="text-3xl font-bold  mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
           Chưa có lịch sử quiz nào
         </h3>
 

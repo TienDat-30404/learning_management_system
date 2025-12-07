@@ -8,3 +8,10 @@ export interface Lesson {
     videoUrl : string,
     isCompleted : boolean
 }
+
+export interface CreateLesson {
+    title : string,
+    content : string,
+    courseId : number,
+    videoUrl : string
+}

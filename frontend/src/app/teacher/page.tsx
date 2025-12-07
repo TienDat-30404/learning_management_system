@@ -26,10 +26,9 @@ import {
   Book,
   BookType
 } from 'lucide-react';
-import { useDashboardTeacher } from '@/hooks/useTeacher';
-import { DashboardTeacher } from '@/types/teacher';
-import DashboardContent from '@/components/teacher/DashboardContent';
+import Overview from '@/components/teacher/dashboard/Overview';
 import StudentContent from '@/components/teacher/StudentContent';
+
 
 interface Course {
   id: string;
@@ -76,11 +75,7 @@ const TeacherLMSDashboard: React.FC = () => {
     { id: '3', title: 'Thiết kế Prototype App', course: 'Thiết kế UI/UX', dueDate: '2025-09-22', submissions: 38, totalStudents: 38, status: 'completed' },
   ];
 
-  const students: Student[] = [
-    { id: '1', name: 'Nguyễn Văn An', email: 'an@email.com', course: 'React & TypeScript', progress: 85, lastActive: '2 giờ trước' },
-    { id: '2', name: 'Trần Thị Bình', email: 'binh@email.com', course: 'Lập trình Web Frontend', progress: 92, lastActive: '1 ngày trước' },
-    { id: '3', name: 'Lê Hoàng Cường', email: 'cuong@email.com', course: 'JavaScript Nâng cao', progress: 67, lastActive: '3 giờ trước' },
-  ];
+ 
 
   const menuItems = [
     { id: 'dashboard', label: 'Trang chủ', icon: BarChart3 },
@@ -98,7 +93,7 @@ const TeacherLMSDashboard: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <DashboardContent />
+        return <Overview />
       case 'students':
         return <StudentContent />
       case 'assignments':
@@ -130,7 +125,7 @@ const TeacherLMSDashboard: React.FC = () => {
           </div>
         );
       default:
-        return DashboardContent();
+        return Overview();
     }
   };
 
