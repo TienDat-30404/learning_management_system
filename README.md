@@ -16,6 +16,7 @@ Dự án được phát triển sử dụng bộ công nghệ hiện đại, t�
     + Hàng đợi tin nhắn/Message Queue: Kafka được sử dụng cho các tác vụ bất đồng bộ như gửi thông báo (Notification-Service, Enrollment-Service).
 
 2. Các Dịch vụ Microservices chính
+
 | Dịch vụ | Chức năng |
 | :--- | :--- |
 | **api-gateway** | Định tuyến yêu cầu, bảo mật, và cân bằng tải (Load Balancing) đến các dịch vụ Microservices. |
